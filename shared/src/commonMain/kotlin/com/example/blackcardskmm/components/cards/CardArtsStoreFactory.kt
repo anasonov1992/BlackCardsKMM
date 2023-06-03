@@ -45,11 +45,8 @@ internal class CardArtsStoreFactory(
         override fun executeIntent(intent: CardArtsStore.Intent, getState: () -> CardArtsStore.State): Unit =
             when (intent) {
                 is CardArtsStore.Intent.SearchActivated -> dispatch(Msg.SearchActivated(isActive = intent.isActive))
-                is CardArtsStore.Intent.SearchProcessing -> dispatch(Msg.SearchProcessing(
-                    filter = intent.filter,
-                    cardArtsFlow = repository.getCardArtsAsFlow()
-                ))
-                is CardArtsStore.Intent.SearchCleared -> dispatch(Msg.SearchCleared(cardArtsFlow = repository.getCardArtsAsFlow()))
+                is CardArtsStore.Intent.SearchProcessing -> getState().setSearchText(filter = intent.filter)
+                is CardArtsStore.Intent.SearchCleared -> getState().clearSearchText()
             }
 
         private fun setupTextSearch(textSearch: StateFlow<String>) {

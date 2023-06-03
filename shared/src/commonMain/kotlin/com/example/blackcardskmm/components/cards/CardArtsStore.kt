@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.*
 interface CardArtsStore: Store<CardArtsStore.Intent, CardArtsStore.State, Nothing> {
     sealed class Intent {
         data class SearchActivated(val isActive: Boolean): Intent()
-        data class SearchProcessing(val filter: String?): Intent()
+        data class SearchProcessing(val filter: String): Intent()
         object SearchCleared: Intent()
     }
 
@@ -19,6 +19,14 @@ interface CardArtsStore: Store<CardArtsStore.Intent, CardArtsStore.State, Nothin
     ) {
         private val _textSearch = MutableStateFlow("")
         val textSearch: StateFlow<String> = _textSearch.asStateFlow()
+
+        fun setSearchText(filter: String) {
+            _textSearch.value = filter
+        }
+
+        fun clearSearchText() {
+            _textSearch.value = ""
+        }
 
         companion object {
             val EMPTY = State()

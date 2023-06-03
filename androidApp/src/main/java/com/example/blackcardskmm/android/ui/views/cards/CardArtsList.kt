@@ -42,10 +42,10 @@ import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 fun CardArtsList(
     component: CardArtsComponent
 ) {
-    val columnsCount = 2
     val state by component.state.collectAsStateWithLifecycle()
-
     val textSearch by state.textSearch.collectAsState()
+
+    val columnsCount = 2
     val lazyTeams: LazyPagingItems<CardArt> = state.cardArts.collectAsLazyPagingItems()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -92,8 +92,8 @@ fun CardArtsList(
                             fontFamily = mikadanFont
                         ),
                         value = textSearch,
-                        onValueChange = viewModel::setSearchText,
-                        onClear = viewModel::clearSearchText
+                        onValueChange = { (component::onEvent)(CardArtsStore.Intent.SearchProcessing(filter = it)) },
+                        onClear = { (component::onEvent)(CardArtsStore.Intent.SearchCleared) }
                     )
                 }
                 LazyVerticalGrid(
