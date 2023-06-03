@@ -15,7 +15,7 @@ class CardArtsComponent (
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     private val output: (Output) -> Unit
-    ) : ComponentContext by componentContext {
+) : ComponentContext by componentContext {
     private val store = instanceKeeper.getStore {
         CardArtsStoreFactory(
             storeFactory = storeFactory

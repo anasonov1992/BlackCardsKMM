@@ -21,29 +21,32 @@ import kotlinx.coroutines.flow.StateFlow
 class MainComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val output: (Output) -> Unit,
     private val fractions: (ComponentContext, (FractionsComponent.Output) -> Unit) -> FractionsComponent,
     private val cardArts: (ComponentContext, (CardArtsComponent.Output) -> Unit) -> CardArtsComponent,
+    private val output: (Output) -> Unit
 ) : ComponentContext by componentContext {
     constructor(
         componentContext: ComponentContext,
         storeFactory: StoreFactory,
+        output: (Output) -> Unit
     ) : this(
         componentContext = componentContext,
-        fractions = { childContext, output ->
+        storeFactory = storeFactory,
+        fractions = { childContext, childOutput ->
             FractionsComponent(
                 componentContext = childContext,
                 storeFactory = storeFactory,
-                output = output
+                output = childOutput
             )
         },
-        cardArts = { childContext, output ->
+        cardArts = { childContext, childOutput ->
             CardArtsComponent(
                 componentContext = childContext,
                 storeFactory = storeFactory,
-                output = output
+                output = childOutput
             )
-        }
+        },
+        output = output
     )
 
     private val store = instanceKeeper.getStore {

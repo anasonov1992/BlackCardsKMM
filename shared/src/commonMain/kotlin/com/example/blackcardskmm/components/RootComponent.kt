@@ -30,6 +30,13 @@ class RootComponent internal constructor(
                 output = output
             )
         },
+        register = { childContext, output ->
+            RegisterComponent(
+                componentContext = childContext,
+                storeFactory = storeFactory,
+                output = output
+            )
+        },
         main = { childContext, output ->
             MainComponent(
                 componentContext = childContext,
@@ -43,7 +50,7 @@ class RootComponent internal constructor(
                 storeFactory = storeFactory,
                 output = output
             )
-        },
+        }
     )
 
     private val navigation = StackNavigation<Configuration>()
@@ -61,6 +68,7 @@ class RootComponent internal constructor(
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
         when (configuration) {
             is Configuration.Auth -> Child.Auth(auth(componentContext, ::onAuthOutput))
+            is Configuration.Register -> Child.Register(register(componentContext, ::onRegisterOutput))
             is Configuration.Main -> Child.Main(main(componentContext, ::onMainOutput))
             is Configuration.CreateDeck -> Child.CreateDeck(createDeck(componentContext, ::onCreateDeckOutput))
         }
