@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Black Cards</string>
+
+    <string name="menu_tab_title">Menu</string>
+    <string name="home_tab_title">Home</string>
+    <string name="hacks_tab_title">Hacks</string>
+    <string name="messenger_tab_title">Chats</string>
+    <string name="teams_drawer_title">Teams</string>
+
+    <!-- Black Cards -->
+    <string name="arts_menu_title">Арты</string>
+    <string name="fractions_menu_title">Фракции</string>
+    <string name="lore_menu_title">Лор</string>
+    <string name="decks_menu_title">Колоды</string>
+    <string name="deck_menu_title">Карты</string>
+    <string name="create_deck_menu_title">Выбор карт</string>
+    <string name="create_deck_summary_menu_title">Колода</string>
+
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="hide_password">Hide</string>
+    <string name="show_password">Show</string>
+</resources>
