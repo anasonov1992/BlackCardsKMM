@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization") version "1.8.10"
     id("com.android.library")
+    id("kotlin-parcelize")
     id("com.rickclephas.kmp.nativecoroutines")
     id("com.squareup.sqldelight")
 }

@@ -1,4 +1,4 @@
-package com.example.blackcardskmm.components.register
+package com.example.blackcardskmm.components.cards
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -7,23 +7,21 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
-class RegisterComponent(
+class CardArtDetailComponent (
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
+    artId: Int,
     private val output: (Output) -> Unit
 ) : ComponentContext by componentContext {
     private val store = instanceKeeper.getStore {
-        RegisterStoreFactory(
-            storeFactory = storeFactory
+        CardArtDetailStoreFactory(
+            storeFactory = storeFactory,
+            artId = artId
         ).create()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<RegisterStore.State> = store.stateFlow
-
-    fun onEvent(event: RegisterStore.Intent) {
-        store.accept(event)
-    }
+    val state: StateFlow<CardArtDetailStore.State> = store.stateFlow
 
     fun onOutput(output: Output) {
         output(output)
@@ -31,6 +29,5 @@ class RegisterComponent(
 
     sealed class Output {
         object NavigateBack : Output()
-        object NavigateToMain : Output()
     }
 }

@@ -12,9 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import com.example.blackcardskmm.data.primitives.FractionType
-import com.example.blackcardskmm.android.ui.states.CardsLibraryState
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
+import com.example.blackcardskmm.components.cards.CardsLibraryStore
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
@@ -22,8 +21,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
 fun CardsLibraryPager(
-    state: CardsLibraryState,
-    fractionType: FractionType
+    state: CardsLibraryStore.State
 ) {
     Column {
         val pagerState = rememberPagerState()
@@ -68,8 +66,8 @@ fun CardsLibraryPager(
             modifier = Modifier.fillMaxSize()
         ) { tabIndex ->
             when (tabIndex) {
-                0 -> CardUnits(state, fractionType)
-                1 -> CardSpells(state, fractionType)
+                0 -> CardUnits(state)
+                1 -> CardSpells(state)
             }
         }
     }

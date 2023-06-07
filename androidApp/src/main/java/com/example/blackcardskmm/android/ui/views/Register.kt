@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,25 +17,17 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ramcosta.composedestinations.annotation.Destination
 import com.example.blackcardskmm.android.R
 import com.example.blackcardskmm.android.ui.components.*
-import com.example.blackcardskmm.android.ui.events.RegistrationEvent
-import com.example.blackcardskmm.android.ui.events.safeCollector
-import com.example.blackcardskmm.android.ui.navigation.interfaces.CommonNavigator
-import com.example.blackcardskmm.android.ui.navigation.models.NavigationEvent
-import com.example.blackcardskmm.android.ui.vm.RegisterViewModel
-import org.koin.androidx.compose.getViewModel
+import com.example.blackcardskmm.components.register.RegisterComponent
+import com.example.blackcardskmm.components.register.RegisterStore
 
-@Destination
 @ExperimentalComposeUiApi
 @Composable
 fun Register(
-    viewModel: RegisterViewModel = getViewModel(),
-    navigator: CommonNavigator,
-    scaffoldState: ScaffoldState
+    component: RegisterComponent
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by component.state.collectAsStateWithLifecycle()
 
     val passwordFocusRequester = FocusRequester.Default
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -68,13 +59,13 @@ fun Register(
             CustomTextField(
                 label = "Имя пользователя",
                 value = state.username,
-                onValueChange = { viewModel.onEvent(RegistrationEvent.UsernameChanged(it)) },
+                onValueChange = { component.onEvent(RegisterStore.Intent.UsernameChanged(it)) },
                 enabled = !state.isLoading
             )
             Spacer(modifier = Modifier.height(spacer))
             EmailTextField(
                 value = state.email,
-                onValueChange = { viewModel.onEvent(RegistrationEvent.EmailChanged(it)) },
+                onValueChange = { component.onEvent(RegisterStore.Intent.EmailChanged(it)) },
                 enabled = !state.isLoading,
                 onAction = KeyboardActions {
                     passwordFocusRequester.requestFocus()
@@ -84,35 +75,33 @@ fun Register(
             PasswordTextField(
                 modifier = Modifier.focusRequester(passwordFocusRequester),
                 value = state.password,
-                onValueChange = { viewModel.onEvent(RegistrationEvent.PasswordChanged(it)) },
+                onValueChange = { component.onEvent(RegisterStore.Intent.PasswordChanged(it)) },
                 enabled = !state.isLoading,
                 passwordVisibility = state.passwordVisibility,
-                onPasswordVisibilityChange = { viewModel.onEvent(RegistrationEvent.PasswordVisibilityChanged(it)) },
+                onPasswordVisibilityChange = { component.onEvent(RegisterStore.Intent.PasswordVisibilityChanged(it)) },
             )
             Spacer(modifier = Modifier.height(spacer))
             PasswordTextField(
                 label = "Подтвердите пароль",
                 modifier = Modifier.focusRequester(passwordFocusRequester),
                 value = state.repeatedPassword,
-                onValueChange = { viewModel.onEvent(RegistrationEvent.RepeatedPasswordChanged(it)) },
+                onValueChange = { component.onEvent(RegisterStore.Intent.RepeatedPasswordChanged(it))  },
                 enabled = !state.isLoading,
                 passwordVisibility = state.passwordVisibility,
-                onPasswordVisibilityChange = { viewModel.onEvent(RegistrationEvent.PasswordVisibilityChanged(it)) },
+                onPasswordVisibilityChange = { component.onEvent(RegisterStore.Intent.PasswordVisibilityChanged(it)) },
                 onAction = KeyboardActions {
                     if (!state.isValid()) return@KeyboardActions
                     keyboardController?.hide()
-                    viewModel.onEvent(RegistrationEvent.RegistrationConfirmed)
+                    component.onEvent(RegisterStore.Intent.RegistrationConfirmed)
                 }
             )
             Spacer(modifier = Modifier.height(20.dp))
             ActionButton(
                 "Подтвердить",
                 onClick = {
-                    if (!state.isValid())
-                        return@ActionButton
-
+                    if (!state.isValid()) return@ActionButton
                     keyboardController?.hide()
-                    viewModel.onEvent(RegistrationEvent.RegistrationConfirmed)
+                    component.onEvent(RegisterStore.Intent.RegistrationConfirmed)
                 },
                 modifier = Modifier.width(240.dp)
             )
@@ -121,13 +110,5 @@ fun Register(
         if (state.isLoading) {
             LoadingIndicator(modifier = Modifier.align(Alignment.Center))
         }
-
-        viewModel.uiEvent.safeCollector(
-            onMessageReceived = scaffoldState.snackbarHostState::showSnackbar,
-            onSuccessCallback = {
-                navigator.navigateEvent(NavigationEvent.NavigateUp)
-                navigator.navigateEvent(NavigationEvent.CardArts)
-            }
-        )
     }
 }

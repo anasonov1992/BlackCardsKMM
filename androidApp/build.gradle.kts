@@ -70,10 +70,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("io.coil-kt:coil-compose:2.2.2")
 
-    // Compose Destinations
-    implementation("io.github.raamcosta.compose-destinations:animations-core:1.8.36-beta")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.8.36-beta")
-
     // Compose Accompanist
     implementation("com.google.accompanist:accompanist-pager-indicators:0.30.0")
     implementation("com.google.accompanist:accompanist-swiperefresh:0.30.0")

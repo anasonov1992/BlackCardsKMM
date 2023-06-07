@@ -28,9 +28,7 @@ import com.example.blackcardskmm.android.ui.components.PasswordTextField
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
 import com.example.blackcardskmm.components.auth.AuthComponent
 import com.example.blackcardskmm.components.auth.AuthStore
-import com.ramcosta.composedestinations.annotation.Destination
 
-@Destination
 @ExperimentalComposeUiApi
 @Composable
 fun SignIn(

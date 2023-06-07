@@ -59,11 +59,6 @@ fun Main(
         coroutineScope.launch { bottomSheetState.show() }
     }
 
-    //FIXME
-//    backHandler(bottomSheetState.isVisible) {
-//        coroutineScope.launch { bottomSheetState.hide() }
-//    }
-
     var fractionId by rememberSaveable { mutableStateOf(0) }
     var deckName by rememberSaveable { mutableStateOf("") }
 
@@ -74,17 +69,16 @@ fun Main(
             Spacer(modifier = Modifier.height(1.dp))
             bottomSheetType?.let {
                 when(it) {
-                    BottomSheetType.Fractions -> { }
-                    //FIXME
-//                        FractionsBottomSheet(
-//                            fractions = state.fractions,
-//                            closeBottomSheet = { it ->
-//                                closeBottomSheet()
-//                                fractionId = it
-//                                bottomSheetType = BottomSheetType.DeckName
-//                                openBottomSheet()
-//                            }
-//                    )
+                    BottomSheetType.Fractions ->
+                        FractionsBottomSheet(
+                            fractions = state.fractions,
+                            closeBottomSheet = { it ->
+                                closeBottomSheet()
+                                fractionId = it
+                                bottomSheetType = BottomSheetType.DeckName
+                                openBottomSheet()
+                            }
+                        )
                     BottomSheetType.DeckName ->
                         SetDeckNameBottomSheet(
                             closeBottomSheet = { it ->

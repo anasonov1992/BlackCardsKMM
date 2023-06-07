@@ -32,8 +32,8 @@ internal class FractionsStoreFactory(
 
     private sealed class Msg {
         object FractionsLoading : Msg()
-        data class FractionsLoadedSuccessful(val fractions: List<Fraction>) : Msg()
-        data class FractionsLoadedFailed(val error: String?) : Msg()
+        data class FractionsLoadingSuccessful(val fractions: List<Fraction>) : Msg()
+        data class FractionsLoadingFailed(val error: String?) : Msg()
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<FractionsStore.Intent, Unit, FractionsStore.State, Msg, Nothing>(dispatchers.main) {
@@ -52,8 +52,8 @@ internal class FractionsStoreFactory(
                     .onStart { dispatch(Msg.FractionsLoading) }
                     .collectLatest { result ->
                         when (result) {
-                            is Result.Success -> dispatch(Msg.FractionsLoadedSuccessful(fractions = result.data))
-                            is Result.Error -> dispatch(Msg.FractionsLoadedFailed(error = result.message))
+                            is Result.Success -> dispatch(Msg.FractionsLoadingSuccessful(fractions = result.data))
+                            is Result.Error -> dispatch(Msg.FractionsLoadingFailed(error = result.message))
                         }
                     }
                 }
@@ -64,8 +64,8 @@ internal class FractionsStoreFactory(
         override fun FractionsStore.State.reduce(msg: Msg): FractionsStore.State =
             when (msg) {
                 is Msg.FractionsLoading -> copy(isLoading = true)
-                is Msg.FractionsLoadedSuccessful -> copy(isLoading = false, fractions = msg.fractions)
-                is Msg.FractionsLoadedFailed -> copy(isLoading = false, error = msg.error)
+                is Msg.FractionsLoadingSuccessful -> copy(isLoading = false, fractions = msg.fractions)
+                is Msg.FractionsLoadingFailed -> copy(isLoading = false, error = msg.error)
             }
     }
 }

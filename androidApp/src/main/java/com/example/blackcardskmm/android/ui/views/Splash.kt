@@ -16,16 +16,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ramcosta.composedestinations.annotation.Destination
 import com.example.blackcardskmm.android.R
-import com.example.blackcardskmm.android.ui.navigation.interfaces.CommonNavigator
-import com.example.blackcardskmm.android.ui.navigation.models.NavigationEvent
 import kotlinx.coroutines.delay
 
-@Destination
 @Composable
 fun Splash(
-    navigator: CommonNavigator
+
 ) {
     var startAnimation by remember { mutableStateOf(false) }
     val transition = updateTransition(
@@ -91,7 +87,6 @@ fun Splash(
     LaunchedEffect(Unit) {
         startAnimation = true
         delay(animationDuration.toLong())
-        navigator.navigateEvent(NavigationEvent.NavigateUp)
-        navigator.navigateEvent(NavigationEvent.SignIn)
+        //TODO intent
     }
 }

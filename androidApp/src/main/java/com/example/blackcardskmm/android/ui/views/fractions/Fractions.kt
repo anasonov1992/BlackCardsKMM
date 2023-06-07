@@ -19,12 +19,10 @@ import com.example.blackcardskmm.components.fractions.FractionsComponent
 import com.example.blackcardskmm.components.fractions.FractionsStore
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.ramcosta.composedestinations.annotation.Destination
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 
-@Destination
 @Composable
 fun Fractions(
     component: FractionsComponent

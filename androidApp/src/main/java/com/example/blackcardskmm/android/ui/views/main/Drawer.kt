@@ -32,7 +32,7 @@ fun Drawer(
         Column(modifier = Modifier.align(Alignment.CenterStart)) {
             TabNavigationItem.drawerNavigationItems.forEach { navItem ->
                 Text(
-                    text = stringResource(navItem.labelResId),
+                    text = "FIXME", //FIXME
                     style = MaterialTheme.typography.h4.copy(fontFamily = mikadanFont),
                     modifier = Modifier.clickable {
                         onDestinationClicked(navItem)

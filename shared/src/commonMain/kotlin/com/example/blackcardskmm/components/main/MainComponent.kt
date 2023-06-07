@@ -15,6 +15,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.example.blackcardskmm.components.cards.CardArtsComponent
 import com.example.blackcardskmm.components.fractions.FractionsComponent
+import com.example.blackcardskmm.data.primitives.FractionType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
@@ -107,7 +108,10 @@ class MainComponent(
         }
 
     //FIXME
-    private fun onFractionsOutput(output: FractionsComponent.Output): Unit = Unit
+    private fun onFractionsOutput(output: FractionsComponent.Output): Unit =
+        when(output) {
+            is FractionsComponent.Output.NavigateToCardsLibrary -> output(Output.NavigateToCardsLibrary(output.fractionId, output.fractionType))
+        }
 
     //FIXME
     private fun onCardArtsOutput(output: CardArtsComponent.Output): Unit = Unit
@@ -118,15 +122,16 @@ class MainComponent(
 
     sealed class Output {
         data class NavigateToCreateCardDeck(val fractionId: Int, val deckName: String) : Output()
+        data class NavigateToCardsLibrary(val fractionId: Int, val fractionType: FractionType) : Output()
         object NavigateToLogout : Output()
     }
 
-    private sealed interface Configuration : Parcelable {
+    private sealed class Configuration : Parcelable {
         @Parcelize
-        object Fractions: Configuration
+        object Fractions: Configuration()
 
         @Parcelize
-        object CardArts : Configuration
+        object CardArts : Configuration()
     }
 
     sealed class Child {

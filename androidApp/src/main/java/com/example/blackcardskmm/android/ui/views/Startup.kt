@@ -12,10 +12,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blackcardskmm.android.R
 import com.example.blackcardskmm.android.ui.theme.BlackPrimary
 import com.example.blackcardskmm.components.startup.StartupComponent
-import kotlinx.coroutines.delay
+import com.example.blackcardskmm.components.startup.StartupStore
 
 @Composable
-fun StartCover(
+fun Startup(
     component: StartupComponent
 ) {
     val state by component.state.collectAsStateWithLifecycle()
@@ -29,7 +29,15 @@ fun StartCover(
     )
 
     LaunchedEffect(Unit) {
-        delay(state.coverDuration)
-        component.onOutput(StartupComponent.Output.NavigateToAppStart)
+        component.onEvent(StartupStore.Intent.NavigateToStart)
+    }
+
+    if (!state.isLoading) {
+        if (state.isAuthenticated) {
+            component.onOutput(StartupComponent.Output.NavigateToAppStart)
+        }
+        else {
+            component.onOutput(StartupComponent.Output.NavigateToAuth)
+        }
     }
 }

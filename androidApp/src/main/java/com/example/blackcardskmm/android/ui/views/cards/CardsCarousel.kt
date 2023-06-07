@@ -16,8 +16,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import com.google.android.material.animation.AnimationUtils
 import com.example.blackcardskmm.domain.models.CardInDeckModel
-import com.example.blackcardskmm.android.ui.navigation.interfaces.CommonNavigator
-import com.example.blackcardskmm.android.ui.navigation.models.NavigationEvent
 import com.example.blackcardskmm.android.ui.views.cards.components.CardPresentation
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -29,7 +27,6 @@ fun CardsCarousel(
     modifier: Modifier = Modifier,
     cards: ImmutableList<CardInDeckModel> = emptyList<CardInDeckModel>().toImmutableList(),
     createDeckModeOn: Boolean = false,
-    navigator: CommonNavigator,
     onCardFromDeckRemoved: () -> Unit = { },
     onCardToDeckAdded: () -> Unit = { },
     canCardBeAdded: () -> Boolean = { true },
@@ -92,7 +89,8 @@ fun CardsCarousel(
                     canCardBeAddedWarning = canCardBeAddedWarning
                 )
                 {
-                    cards[page].imageFullUrl?.let { navigator.navigateEvent(NavigationEvent.CardImageDetail(it)) }
+                    //FIXME
+//                    cards[page].imageFullUrl?.let { navigator.navigateEvent(NavigationEvent.CardImageDetail(it)) }
                 }
             }
     }

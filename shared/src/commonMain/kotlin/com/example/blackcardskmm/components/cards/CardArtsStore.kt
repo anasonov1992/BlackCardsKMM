@@ -5,7 +5,7 @@ import com.example.blackcardskmm.domain.models.CardArt
 import com.kuuurt.paging.multiplatform.PagingData
 import kotlinx.coroutines.flow.*
 
-interface CardArtsStore: Store<CardArtsStore.Intent, CardArtsStore.State, Nothing> {
+interface CardArtsStore : Store<CardArtsStore.Intent, CardArtsStore.State, Nothing> {
     sealed class Intent {
         data class SearchActivated(val isActive: Boolean): Intent()
         data class SearchProcessing(val filter: String): Intent()

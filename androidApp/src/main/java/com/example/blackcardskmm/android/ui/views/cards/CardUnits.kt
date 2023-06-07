@@ -11,20 +11,19 @@ import com.example.blackcardskmm.data.primitives.FractionType
 import com.example.blackcardskmm.domain.models.CardUnit
 import com.example.blackcardskmm.android.ui.components.ErrorItem
 import com.example.blackcardskmm.android.ui.components.LoadingItem
-import com.example.blackcardskmm.android.ui.states.CardsLibraryState
+import com.example.blackcardskmm.components.cards.CardsLibraryStore
 import com.example.blackcardskmm.util.DefaultTitles
 
 @Composable
 fun CardUnits(
-    state: CardsLibraryState,
-    fractionType: FractionType
+    state: CardsLibraryStore.State
 ) {
-    val lazyTeams: LazyPagingItems<CardUnit> = state.cardUnits.collectAsLazyPagingItems()
+    val lazyTeams: LazyPagingItems<CardUnit> = state.cardUnitsFlow.collectAsLazyPagingItems()
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(lazyTeams.itemCount, key = { it }) { index ->
             lazyTeams[index]?.let {
-                CardUnitItem(it, fractionType)
+                CardUnitItem(it, state.fractionType)
             }
         }
         lazyTeams.apply {

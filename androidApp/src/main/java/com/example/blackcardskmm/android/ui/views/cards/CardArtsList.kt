@@ -32,12 +32,10 @@ import com.example.blackcardskmm.components.cards.CardArtsComponent
 import com.example.blackcardskmm.components.cards.CardArtsStore
 import com.example.blackcardskmm.domain.models.CardArt
 import com.example.blackcardskmm.util.DefaultTitles
-import com.ramcosta.composedestinations.annotation.Destination
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 
-@Destination
 @Composable
 fun CardArtsList(
     component: CardArtsComponent
