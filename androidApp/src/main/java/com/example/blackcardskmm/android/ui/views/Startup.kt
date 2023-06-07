@@ -5,23 +5,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blackcardskmm.android.R
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.example.blackcardskmm.android.ui.navigation.interfaces.CommonNavigator
-import com.example.blackcardskmm.android.ui.navigation.models.NavigationEvent
 import com.example.blackcardskmm.android.ui.theme.BlackPrimary
+import com.example.blackcardskmm.components.startup.StartupComponent
 import kotlinx.coroutines.delay
 
-@RootNavGraph(start = true)
-@Destination
 @Composable
 fun StartCover(
-    navigator: CommonNavigator
+    component: StartupComponent
 ) {
-    val coverDuration = 3000L
+    val state by component.state.collectAsStateWithLifecycle()
 
     Image(
         painter = painterResource(id = R.drawable.cover),
@@ -32,8 +29,7 @@ fun StartCover(
     )
 
     LaunchedEffect(Unit) {
-        delay(coverDuration)
-        navigator.navigateEvent(NavigationEvent.NavigateUp)
-        navigator.navigateEvent(NavigationEvent.SignIn)
+        delay(state.coverDuration)
+        component.onOutput(StartupComponent.Output.NavigateToAppStart)
     }
 }
