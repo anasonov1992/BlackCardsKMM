@@ -12,8 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import com.example.blackcardskmm.android.ui.states.DecksState
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
+import com.example.blackcardskmm.components.decks.DecksStore
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
 fun DecksPager(
-    state: DecksState,
+    state: DecksStore.State,
     onDeckNavigate: (Int, Int, String) -> Unit
 ) {
     Column {

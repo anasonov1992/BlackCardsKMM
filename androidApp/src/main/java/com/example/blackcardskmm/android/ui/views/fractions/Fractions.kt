@@ -16,9 +16,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blackcardskmm.android.R
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
 import com.example.blackcardskmm.components.fractions.FractionsComponent
-import com.example.blackcardskmm.components.fractions.FractionsStore
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
@@ -49,15 +46,10 @@ fun Fractions(
             },
             modifier = Modifier
         ) {
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(state.isRefreshing),
-                onRefresh = { component.onEvent(FractionsStore.Intent.Refresh) }
-            ) {
-                LazyColumn {
-                    items(state.fractions) {
-                        FractionCard(it) { fractionId, fractionType ->
-                            component.onOutput(FractionsComponent.Output.NavigateToCardsLibrary(fractionId, fractionType))
-                        }
+            LazyColumn {
+                items(state.fractions) {
+                    FractionCard(it) { fractionId, fractionType ->
+                        component.onOutput(FractionsComponent.Output.NavigateToCardsLibrary(fractionId, fractionType))
                     }
                 }
             }

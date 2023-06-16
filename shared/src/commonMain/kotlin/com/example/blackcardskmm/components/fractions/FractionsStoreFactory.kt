@@ -22,7 +22,7 @@ internal class FractionsStoreFactory(
     private val dispatchers by inject<CustomDispatchers>()
 
     fun create(): FractionsStore =
-        object : FractionsStore, Store<FractionsStore.Intent, FractionsStore.State, Nothing> by storeFactory.create(
+        object : FractionsStore, Store<Nothing, FractionsStore.State, Nothing> by storeFactory.create(
             name = "FractionsStore",
             initialState = FractionsStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
@@ -32,28 +32,23 @@ internal class FractionsStoreFactory(
 
     private sealed class Msg {
         object FractionsLoading : Msg()
-        data class FractionsLoadingSuccessful(val fractions: List<Fraction>) : Msg()
-        data class FractionsLoadingFailed(val error: String?) : Msg()
+        data class FractionsLoaded(val fractions: List<Fraction>) : Msg()
+        data class FractionsFailed(val error: String?) : Msg()
     }
 
-    private inner class ExecutorImpl : CoroutineExecutor<FractionsStore.Intent, Unit, FractionsStore.State, Msg, Nothing>(dispatchers.main) {
+    private inner class ExecutorImpl : CoroutineExecutor<Nothing, Unit, FractionsStore.State, Msg, Nothing>(dispatchers.main) {
         override fun executeAction(action: Unit, getState: () -> FractionsStore.State) {
             loadFractions()
         }
 
-        override fun executeIntent(intent: FractionsStore.Intent, getState: () -> FractionsStore.State): Unit =
-            when (intent) {
-                is FractionsStore.Intent.Refresh -> loadFractions(isRefreshing = true)
-            }
-
-        private fun loadFractions(isRefreshing: Boolean = false) {
+        private fun loadFractions() {
             scope.launch {
                 repository.getFractions(fetchFromRemote = false)
                     .onStart { dispatch(Msg.FractionsLoading) }
                     .collectLatest { result ->
                         when (result) {
-                            is Result.Success -> dispatch(Msg.FractionsLoadingSuccessful(fractions = result.data))
-                            is Result.Error -> dispatch(Msg.FractionsLoadingFailed(error = result.message))
+                            is Result.Success -> dispatch(Msg.FractionsLoaded(fractions = result.data))
+                            is Result.Error -> dispatch(Msg.FractionsFailed(error = result.message))
                         }
                     }
                 }
@@ -64,8 +59,8 @@ internal class FractionsStoreFactory(
         override fun FractionsStore.State.reduce(msg: Msg): FractionsStore.State =
             when (msg) {
                 is Msg.FractionsLoading -> copy(isLoading = true)
-                is Msg.FractionsLoadingSuccessful -> copy(isLoading = false, fractions = msg.fractions)
-                is Msg.FractionsLoadingFailed -> copy(isLoading = false, error = msg.error)
+                is Msg.FractionsLoaded -> copy(isLoading = false, fractions = msg.fractions)
+                is Msg.FractionsFailed -> copy(isLoading = false, error = msg.error)
             }
     }
 }

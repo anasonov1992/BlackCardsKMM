@@ -1,11 +1,11 @@
 package com.example.blackcardskmm.android.ui.views.decks
 
 import androidx.compose.runtime.Composable
-import com.example.blackcardskmm.android.ui.states.DecksState
+import com.example.blackcardskmm.components.decks.DecksStore
 
 @Composable
 fun SharedDecks(
-    state: DecksState
+    state: DecksStore.State
 ) {
-
+    //TODO
 }

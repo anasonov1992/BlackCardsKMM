@@ -9,6 +9,8 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.example.blackcardskmm.components.auth.AuthComponent
 import com.example.blackcardskmm.components.cards.CardsLibraryComponent
 import com.example.blackcardskmm.components.createDeck.CreateCardDeckComponent
+import com.example.blackcardskmm.components.decks.DecksComponent
+import com.example.blackcardskmm.components.lore.LoreComponent
 import com.example.blackcardskmm.components.main.MainComponent
 import com.example.blackcardskmm.components.register.RegisterComponent
 import com.example.blackcardskmm.components.startup.StartupComponent
@@ -17,10 +19,11 @@ import com.example.blackcardskmm.data.primitives.FractionType
 class RootComponent internal constructor(
     componentContext: ComponentContext,
     private val startup: (ComponentContext, (StartupComponent.Output) -> Unit) -> StartupComponent,
-//    private val splash: (ComponentContext, (SplashComponent.Output) -> Unit) -> SplashComponent,
     private val auth: (ComponentContext, (AuthComponent.Output) -> Unit) -> AuthComponent,
     private val register: (ComponentContext, (RegisterComponent.Output) -> Unit) -> RegisterComponent,
     private val main: (ComponentContext, (MainComponent.Output) -> Unit) -> MainComponent,
+    private val lore: (ComponentContext, (LoreComponent.Output) -> Unit) -> LoreComponent,
+    private val decks: (ComponentContext, (DecksComponent.Output) -> Unit) -> DecksComponent,
     private val createDeck: (ComponentContext, (CreateCardDeckComponent.Output) -> Unit) -> CreateCardDeckComponent,
     private val cardsLibrary: (ComponentContext, fractionId: Int, fractionType: FractionType, (CardsLibraryComponent.Output) -> Unit) -> CardsLibraryComponent
 ): ComponentContext by componentContext {
@@ -36,13 +39,6 @@ class RootComponent internal constructor(
                 output = output
             )
         },
-//        splash = { childContext, output ->
-//            SplashComponent(
-//                componentContext = childContext,
-//                storeFactory = storeFactory,
-//                output = output
-//            )
-//        },
         auth = { childContext, output ->
             AuthComponent(
                 componentContext = childContext,
@@ -59,6 +55,20 @@ class RootComponent internal constructor(
         },
         main = { childContext, output ->
             MainComponent(
+                componentContext = childContext,
+                storeFactory = storeFactory,
+                output = output
+            )
+        },
+        lore = { childContext, output ->
+            LoreComponent(
+                componentContext = childContext,
+                storeFactory = storeFactory,
+                output = output
+            )
+        },
+        decks = { childContext, output ->
+            DecksComponent(
                 componentContext = childContext,
                 storeFactory = storeFactory,
                 output = output
@@ -97,10 +107,11 @@ class RootComponent internal constructor(
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
         when (configuration) {
             is Configuration.Startup -> Child.Startup(startup(componentContext, ::onStartCoverOutput))
-//            is Configuration.Splash -> Child.Splash(splash(componentContext, ::onSplashOutput))
             is Configuration.Auth -> Child.Auth(auth(componentContext, ::onAuthOutput))
             is Configuration.Register -> Child.Register(register(componentContext, ::onRegisterOutput))
             is Configuration.Main -> Child.Main(main(componentContext, ::onMainOutput))
+            is Configuration.Lore -> Child.Lore(lore(componentContext, ::onLoreOutput))
+            is Configuration.Decks -> Child.Decks(decks(componentContext, ::onDecksOutput))
             is Configuration.CreateCardDeck -> Child.CreateCardDeck(createDeck(componentContext, ::onCreateCardDeckOutput))
             is Configuration.CardsLibrary -> Child.CardsLibrary(cardsLibrary(componentContext, configuration.fractionId, configuration.fractionType, ::onCreateCardsLibraryOutput))
         }
@@ -111,23 +122,33 @@ class RootComponent internal constructor(
             is StartupComponent.Output.NavigateToAppStart -> navigation.replaceCurrent(Configuration.Main)
         }
 
-    //FIXME
-//    private  fun onSplashOutput(output: SplashComponent.Output): Unit = Unit
-
     private fun onAuthOutput(output: AuthComponent.Output): Unit =
         when (output) {
             AuthComponent.Output.NavigateToMain -> navigation.push(Configuration.Main)
             AuthComponent.Output.NavigateToRegister -> navigation.push(Configuration.Register)
         }
 
-    //FIXME
-    private fun onRegisterOutput(output: RegisterComponent.Output): Unit = Unit
+    private fun onRegisterOutput(output: RegisterComponent.Output): Unit =
+        when (output) {
+            RegisterComponent.Output.NavigateToMain -> navigation.push(Configuration.Main)
+            RegisterComponent.Output.NavigateBack -> navigation.pop()
+        }
 
     private fun onMainOutput(output: MainComponent.Output): Unit =
         when (output) {
             is MainComponent.Output.NavigateToCreateCardDeck -> navigation.push(Configuration.CreateCardDeck)
             is MainComponent.Output.NavigateToCardsLibrary -> navigation.push(Configuration.CardsLibrary(output.fractionId, output.fractionType))
             MainComponent.Output.NavigateToLogout -> navigation.replaceCurrent(Configuration.Auth)
+        }
+
+    private  fun onLoreOutput(output: LoreComponent.Output): Unit =
+        when (output) {
+            LoreComponent.Output.NavigateBack -> navigation.pop()
+        }
+
+    private  fun onDecksOutput(output: DecksComponent.Output): Unit =
+        when (output) {
+            DecksComponent.Output.NavigateBack -> navigation.pop()
         }
 
     //FIXME
@@ -144,9 +165,6 @@ class RootComponent internal constructor(
         @Parcelize
         object Startup: Configuration()
 
-//        @Parcelize
-//        object Splash: Configuration
-
         @Parcelize
         object Auth: Configuration()
 
@@ -155,6 +173,12 @@ class RootComponent internal constructor(
 
         @Parcelize
         object Main : Configuration()
+
+        @Parcelize
+        object Lore: Configuration()
+
+        @Parcelize
+        object Decks: Configuration()
 
         @Parcelize
         object CreateCardDeck : Configuration()
@@ -166,13 +190,15 @@ class RootComponent internal constructor(
     sealed class Child {
         data class Startup(val component: StartupComponent) : Child()
 
-//        data class Splash(val component: SplashComponent) : Child()
-
         data class Auth(val component: AuthComponent) : Child()
 
         data class Register(val component: RegisterComponent) : Child()
 
         data class Main(val component: MainComponent) : Child()
+
+        data class Lore(val component: LoreComponent) : Child()
+
+        data class Decks(val component: DecksComponent) : Child()
 
         data class CreateCardDeck(val component: CreateCardDeckComponent) : Child()
 
