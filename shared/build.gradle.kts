@@ -1,6 +1,7 @@
+
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.8.10"
+    kotlin("multiplatform") version "1.9.21"
+    kotlin("plugin.serialization") version "1.9.21"
     id("com.android.library")
     id("kotlin-parcelize")
     id("com.rickclephas.kmp.nativecoroutines")
@@ -14,10 +15,10 @@ kotlin.targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarge
 }
 
 kotlin {
-    android {
+    androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "17"
             }
         }
     }
@@ -35,10 +36,10 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
                 // Ktor
-                implementation("io.ktor:ktor-client-core:2.2.4")
+                implementation("io.ktor:ktor-client-core:2.3.7")
                 implementation("io.ktor:ktor-client-content-negotiation:2.2.4")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.4")
                 implementation("io.ktor:ktor-client-logging:2.2.4")
@@ -46,6 +47,9 @@ kotlin {
 
                 // SQLight
                 implementation("com.squareup.sqldelight:runtime:1.5.5")
+
+//              implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-alpha05")
+//              implementation("app.cash.sqldelight:primitive-adapters:2.0.0-alpha05")
 
                 // Koin
                 implementation("io.insert-koin:koin-core:3.4.0")
@@ -60,20 +64,26 @@ kotlin {
                 implementation("com.benasher44:uuid:0.7.0")
 
                 // Decompose
-                implementation("com.arkivanov.decompose:decompose:2.0.0-alpha-02")
+                implementation("com.arkivanov.decompose:decompose:2.2.1")
 
                 // MVIKotlin
-                implementation("com.arkivanov.mvikotlin:mvikotlin:3.2.1")
-                implementation("com.arkivanov.mvikotlin:mvikotlin-main:3.2.1")
+                implementation("com.arkivanov.mvikotlin:mvikotlin:3.3.0")
+                implementation("com.arkivanov.mvikotlin:mvikotlin-main:3.3.0")
                 implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:3.2.1")
-                implementation("com.arkivanov.mvikotlin:rx:3.2.1")
+                implementation("com.arkivanov.mvikotlin:rx:3.3.0")
+
+                implementation("io.realm.kotlin:library-base:1.13.0") // Add to use local realm (no sync)
+                implementation("io.realm.kotlin:library-sync:1.8.0") // Add to use Device Sync
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1") // Add to use coroutines with the SDK
             }
         }
+
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
+
         val androidMain by getting {
             dependencies {
                 dependsOn(commonMain)
@@ -116,15 +126,26 @@ kotlin {
 
 android {
     namespace = "com.example.blackcardskmm"
-    compileSdk = 33
+    compileSdk = 34
+    
     defaultConfig {
         minSdk = 24
-        targetSdk = 33
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    buildToolsVersion = "34.0.0"
+}
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.12.0")
 }
 
 sqldelight {
-    database("BlackCardsDb") {
+    database("BlackCardsDatabase") {
         packageName = "com.example.blackcardskmm.db"
         sourceFolders = listOf("sqldelight")
     }
