@@ -27,7 +27,6 @@ import com.example.blackcardskmm.android.ui.components.ErrorItem
 import com.example.blackcardskmm.android.ui.components.LoadingItem
 import com.example.blackcardskmm.android.ui.components.SearchTextField
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
-import com.example.blackcardskmm.android.ui.views.cards.components.CardArtsListItem
 import com.example.blackcardskmm.components.cards.CardArtsComponent
 import com.example.blackcardskmm.components.cards.CardArtsStore
 import com.example.blackcardskmm.domain.models.CardArt

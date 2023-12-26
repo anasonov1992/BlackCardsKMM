@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.BalloonAnimation
@@ -138,12 +139,14 @@ fun CardPresentation(
         }
 
         if (createDeckModeOn) {
+            val cardAmountInDeck by card.amountInDeck.collectAsStateWithLifecycle()
+
             Row {
                 RoundedButton(
-                    enabled = card.amountInDeck.value > 0,
+                    enabled = cardAmountInDeck > 0,
                     onClick = {
                         if (card.canRemoveCardFromDeck) {
-                            card.amountInDeck.value--
+                            card.amountInDeckDown()
                             onCardFromDeckRemoved()
                         }
                     }) {
@@ -155,12 +158,12 @@ fun CardPresentation(
                 }
                 Spacer(modifier = Modifier.width(24.dp))
                 RoundedButton(
-                    backgroundColor = if (card.amountInDeck.value > 0) CompleteBackgroundColor else MaterialTheme.colors.primary
+                    backgroundColor = if (cardAmountInDeck > 0) CompleteBackgroundColor else MaterialTheme.colors.primary
                 ) {
                     Text(
-                        text = card.amountInDeck.value.toString(),
+                        text = cardAmountInDeck.toString(),
                         style = TextStyle(
-                            color = if (card.amountInDeck.value > 0) MaterialTheme.colors.primary else MaterialTheme.colors.onPrimary,
+                            color = if (cardAmountInDeck > 0) MaterialTheme.colors.primary else MaterialTheme.colors.onPrimary,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = mikadanFont
@@ -178,6 +181,7 @@ fun CardPresentation(
                     }
                 ) { balloonWindow ->
                     val canCardBeAdded = canCardBeAdded() && card.canAddCardToDeck
+
                     RoundedButton(
                         enabled = canCardBeAdded,
                         onClick = {
@@ -185,7 +189,7 @@ fun CardPresentation(
                                 balloonWindow.showAlignTop()
                             }
                             else {
-                                card.amountInDeck.value++
+                                card.amountInDeckUp()
                                 onCardToDeckAdded()
                             }
                         }) {

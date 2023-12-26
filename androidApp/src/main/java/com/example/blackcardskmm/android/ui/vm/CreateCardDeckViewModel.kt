@@ -1,21 +1,8 @@
 package com.example.blackcardskmm.android.ui.vm
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.blackcardskmm.android.ui.states.CardDeckState
-import com.example.blackcardskmm.data.models.CardInDeckPairDto
-import com.example.blackcardskmm.data.models.CreateDeckDto
 import com.example.blackcardskmm.domain.repository.DecksRepository
-import com.example.blackcardskmm.util.Result
-import com.example.blackcardskmm.util.ObservableLoader
-import com.example.blackcardskmm.domain.models.CardDeckRankGroup
-import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 class CreateCardDeckViewModel constructor(
     private val repository: DecksRepository,

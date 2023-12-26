@@ -11,12 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.blackcardskmm.data.primitives.FractionType
 import com.example.blackcardskmm.domain.models.CardSpell
 import com.example.blackcardskmm.android.ui.components.HtmlText
@@ -43,12 +45,13 @@ fun CardSpellItem(
             val (image, name, typesText, flavor, description) = createRefs()
             Image(
                 contentScale = ContentScale.Crop,
-                painter = rememberImagePainter(
-                    data = card.imageUrl,
-                    builder = {
-//                      placeholder(R.drawable.ic_user_avatar) //FIXME set actual placeholder
-                        crossfade(true)
-                    }
+                painter = //                      placeholder(R.drawable.ic_user_avatar) //FIXME set actual placeholder
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current).data(data = card.imageUrl)
+                        .apply(block = fun ImageRequest.Builder.() {
+                            //                      placeholder(R.drawable.ic_user_avatar) //FIXME set actual placeholder
+                            crossfade(true)
+                        }).build()
                 ),
                 contentDescription = "Image",
                 modifier = Modifier

@@ -1,4 +1,4 @@
-package com.example.blackcardskmm.android.ui.views.cards.components
+package com.example.blackcardskmm.android.ui.views.cards
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -13,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.blackcardskmm.domain.models.CardArt
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
 
@@ -39,12 +41,13 @@ fun CardArtsListItem(
             val (image, name, fraction) = createRefs()
             Image(
                 contentScale = ContentScale.Crop,
-                painter = rememberImagePainter(
-                    data = cardArt.artUrl,
-                    builder = {
-//                      placeholder(R.drawable.ic_user_avatar) //FIXME set actual placeholder
-                        crossfade(true)
-                    }
+                painter = //                      placeholder(R.drawable.ic_user_avatar) //FIXME set actual placeholder
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current).data(data = cardArt.artUrl)
+                        .apply(block = fun ImageRequest.Builder.() {
+                            //                      placeholder(R.drawable.ic_user_avatar) //FIXME set actual placeholder
+                            crossfade(true)
+                        }).build()
                 ),
                 contentDescription = "Image",
                 modifier = Modifier

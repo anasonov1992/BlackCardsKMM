@@ -31,4 +31,8 @@ data class CardInDeckModel(
                 CardUniqueType.NotMoreTwo -> "Не более двух карт в колоде"
                 else -> "Уникальная карта"
             }
+
+    fun amountInDeckUp() = amountInDeck.value++
+
+    fun amountInDeckDown() = amountInDeck.value--
 }

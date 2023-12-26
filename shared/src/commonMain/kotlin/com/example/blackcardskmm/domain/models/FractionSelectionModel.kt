@@ -9,4 +9,8 @@ data class FractionSelectionModel(
     val isSelected: MutableStateFlow<Boolean> = MutableStateFlow(false)
 ) {
     constructor(fraction: Fraction) : this(fraction.id, fraction.name, fraction.logoUrl)
+
+    fun select() {
+        isSelected.value = !isSelected.value
+    }
 }

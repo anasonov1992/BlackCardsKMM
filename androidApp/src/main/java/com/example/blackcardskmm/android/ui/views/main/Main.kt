@@ -57,7 +57,7 @@ fun Main(
         coroutineScope.launch { bottomSheetState.show() }
     }
 
-    var fractionId by rememberSaveable { mutableStateOf(0) }
+    var fractionId by rememberSaveable { mutableIntStateOf(0) }
     var deckName by rememberSaveable { mutableStateOf("") }
 
     ModalBottomSheetLayout(
@@ -70,7 +70,7 @@ fun Main(
                     BottomSheetType.Fractions ->
                         FractionsBottomSheet(
                             fractions = state.fractions,
-                            closeBottomSheet = { it ->
+                            closeBottomSheet = {
                                 closeBottomSheet()
                                 fractionId = it
                                 bottomSheetType = BottomSheetType.DeckName

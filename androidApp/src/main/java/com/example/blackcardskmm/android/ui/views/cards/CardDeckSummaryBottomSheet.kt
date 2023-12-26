@@ -4,12 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blackcardskmm.android.ui.components.RoundedButton
 import com.example.blackcardskmm.android.ui.theme.CompleteBackgroundColor
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
@@ -26,6 +28,8 @@ fun CardDeckSummaryBottomSheet(
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         ranksInfo.forEach {
+            val cardsOfRankCount by it.cardsOfRankCount.collectAsStateWithLifecycle()
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -46,12 +50,12 @@ fun CardDeckSummaryBottomSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RoundedButton(
-                        backgroundColor = if (it.cardsOfRankCount.value > 0) CompleteBackgroundColor else MaterialTheme.colors.primary
+                        backgroundColor = if (cardsOfRankCount > 0) CompleteBackgroundColor else MaterialTheme.colors.primary
                     ) {
                         Text(
-                            text = it.cardsOfRankCount.value.toString(),
+                            text = cardsOfRankCount.toString(),
                             style = TextStyle(
-                                color = if (it.cardsOfRankCount.value > 0) MaterialTheme.colors.primary else MaterialTheme.colors.onPrimary,
+                                color = if (cardsOfRankCount > 0) MaterialTheme.colors.primary else MaterialTheme.colors.onPrimary,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = mikadanFont
