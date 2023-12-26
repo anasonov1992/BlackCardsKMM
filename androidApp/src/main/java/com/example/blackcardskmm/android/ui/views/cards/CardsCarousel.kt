@@ -32,13 +32,17 @@ fun CardsCarousel(
     canCardBeAdded: () -> Boolean = { true },
     canCardBeAddedWarning: String = ""
 ) {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        initialPageOffsetFraction = 0f
+    ) {
+        cards.count()
+    }
 
 //    LazyRow {
 //        itemsIndexed(cards, key = { _, model -> model.id } ) { index, _ ->
 
     HorizontalPager(
-        pageCount = cards.count(),
         contentPadding = PaddingValues(horizontal = 32.dp),
         modifier = modifier.fillMaxWidth(),
         state = pagerState,

@@ -12,10 +12,8 @@ import com.example.blackcardskmm.android.ui.views.decks.Decks
 import com.example.blackcardskmm.android.ui.views.lore.Lore
 import com.example.blackcardskmm.android.ui.views.main.Main
 import com.example.blackcardskmm.components.RootComponent
-import com.google.accompanist.pager.ExperimentalPagerApi
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalPagerApi::class,
-    ExperimentalFoundationApi::class
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class
 )
 @Composable
 internal fun Root(component: RootComponent) {

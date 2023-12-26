@@ -14,17 +14,21 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
 import com.example.blackcardskmm.components.cards.CardsLibraryStore
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardsLibraryPager(
     state: CardsLibraryStore.State
 ) {
     Column {
-        val pagerState = rememberPagerState()
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            initialPageOffsetFraction = 0f
+        ) {
+            2
+        }
         val scope = rememberCoroutineScope()
 
         TabRow(
@@ -61,7 +65,6 @@ fun CardsLibraryPager(
             }
         }
         HorizontalPager(
-            pageCount = 2,
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { tabIndex ->

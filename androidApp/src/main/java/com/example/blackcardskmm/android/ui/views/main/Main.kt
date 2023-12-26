@@ -18,12 +18,10 @@ import com.example.blackcardskmm.android.ui.views.decks.SetDeckNameBottomSheet
 import com.example.blackcardskmm.android.ui.views.fractions.Fractions
 import com.example.blackcardskmm.android.ui.views.fractions.FractionsBottomSheet
 import com.example.blackcardskmm.components.main.MainComponent
-import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @ExperimentalComposeUiApi
-@ExperimentalPagerApi
 @ExperimentalFoundationApi
 @Composable
 fun Main(
