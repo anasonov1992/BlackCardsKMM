@@ -22,6 +22,7 @@ import repositoryModule
 fun appModules(enableNetworkLogs: Boolean = false) = listOf(
     networkModule(enableNetworkLogs),
     apiModule(),
+    databaseModule(),
     repositoryModule(),
     coreModule(),
     platformModule()
