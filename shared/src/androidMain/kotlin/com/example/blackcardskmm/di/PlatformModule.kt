@@ -7,9 +7,4 @@ import org.koin.dsl.module
 actual fun platformModule() = module {
     single<AccessTokenStorage> { SharedPrefsAccessTokenStorage(get()) }
     single { Android.create() }
-    //FIXME
-//    single {
-//        val driver = AndroidSqliteDriver(BlackCardsDb.Schema, get(), "blackcards.db")
-//        BlackCardsDb(driver)
-//    }
 }
