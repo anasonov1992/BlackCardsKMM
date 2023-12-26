@@ -5,7 +5,7 @@ plugins {
     id("com.android.library")
     id("kotlin-parcelize")
     id("com.rickclephas.kmp.nativecoroutines")
-    id("com.squareup.sqldelight")
+//    id("io.realm.kotlin")
 }
 
 kotlin.targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget::class.java) {
@@ -142,11 +142,4 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
-}
-
-sqldelight {
-    database("BlackCardsDatabase") {
-        packageName = "com.example.blackcardskmm.db"
-        sourceFolders = listOf("sqldelight")
-    }
 }
