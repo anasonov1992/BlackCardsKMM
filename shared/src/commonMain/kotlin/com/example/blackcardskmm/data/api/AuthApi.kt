@@ -21,6 +21,7 @@ class AuthApi(
     }.body<LoginResponseDto>()
 
     suspend fun register(request: RegisterRequestDto) = client.post("$baseUrl/api/register") {
+        contentType(ContentType.Application.Json)
         setBody(request)
     }.body<RegisterResponseDto>()
 }

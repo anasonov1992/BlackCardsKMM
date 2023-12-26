@@ -124,7 +124,7 @@ class RootComponent internal constructor(
 
     private fun onAuthOutput(output: AuthComponent.Output): Unit =
         when (output) {
-            AuthComponent.Output.NavigateToMain -> navigation.push(Configuration.Main)
+            AuthComponent.Output.NavigateToMain -> navigation.replaceCurrent(Configuration.Main)
             AuthComponent.Output.NavigateToRegister -> navigation.push(Configuration.Register)
         }
 

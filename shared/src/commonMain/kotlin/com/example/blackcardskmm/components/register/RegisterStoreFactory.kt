@@ -43,7 +43,10 @@ internal class RegisterStoreFactory(
 
     private inner class ExecutorImpl : CoroutineExecutor<RegisterStore.Intent, Unit, RegisterStore.State, Msg, Nothing>(dispatchers.main) {
         override fun executeAction(action: Unit, getState: () -> RegisterStore.State) {
-            register(getState().username, getState().email, getState().password)
+            val state = getState()
+            if (state.isValid()) {
+                register(getState().username, getState().email, getState().password)
+            }
         }
 
         override fun executeIntent(intent: RegisterStore.Intent, getState: () -> RegisterStore.State): Unit =
@@ -76,10 +79,10 @@ internal class RegisterStoreFactory(
                 is Msg.RegistrationProcessing -> copy(isLoading = true)
                 is Msg.RegistrationSuccessful -> copy(isLoading = false, isRegistered = true)
                 is Msg.RegistrationFailed -> copy(isLoading = false, error = msg.error)
-                is Msg.UsernameChanged -> copy(email = msg.username)
+                is Msg.UsernameChanged -> copy(username = msg.username)
                 is Msg.EmailChanged -> copy(email = msg.email)
                 is Msg.PasswordChanged -> copy(password = msg.password)
-                is Msg.RepeatedPasswordChanged -> copy(password = msg.password)
+                is Msg.RepeatedPasswordChanged -> copy(repeatedPassword = msg.password)
                 is Msg.PasswordVisibilityChanged -> copy(passwordVisibility = msg.passwordVisibility)
             }
     }

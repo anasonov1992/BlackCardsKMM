@@ -41,7 +41,10 @@ internal class AuthStoreFactory(
 
     private inner class ExecutorImpl : CoroutineExecutor<AuthStore.Intent, Unit, AuthStore.State, Msg, Nothing>(dispatchers.main) {
         override fun executeAction(action: Unit, getState: () -> AuthStore.State) {
-            signIn(getState().email, getState().password)
+            val state = getState()
+            if (state.isValid()) {
+                signIn(getState().email, getState().password)
+            }
         }
 
         override fun executeIntent(intent: AuthStore.Intent, getState: () -> AuthStore.State): Unit =

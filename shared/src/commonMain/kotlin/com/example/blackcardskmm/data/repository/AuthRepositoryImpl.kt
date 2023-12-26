@@ -42,9 +42,13 @@ class AuthRepositoryImpl(
             catch (se: ServerResponseException) {
                 val statusCode: Int = se.response.status.value
                 emit(Result.Error(code = statusCode, message = se.message))
-            } catch (ce: ClientRequestException) {
+            }
+            catch (ce: ClientRequestException) {
                 val statusCode = ce.response.status.value
                 emit(Result.Error(code = statusCode, message = ce.message))
+            }
+            catch(ex: Exception) {
+                emit(Result.Error(message = ex.message!!))
             }
         }.flowOn(dispatchers.default)
 
@@ -58,9 +62,13 @@ class AuthRepositoryImpl(
             catch (se: ServerResponseException) {
                 val statusCode: Int = se.response.status.value
                 emit(Result.Error(code = statusCode, message = se.message))
-            } catch (ce: ClientRequestException) {
+            }
+            catch (ce: ClientRequestException) {
                 val statusCode = ce.response.status.value
                 emit(Result.Error(code = statusCode, message = ce.message))
+            }
+            catch (ex: Exception) {
+                emit(Result.Error(message = ex.message!!))
             }
         }.flowOn(dispatchers.default)
 }
