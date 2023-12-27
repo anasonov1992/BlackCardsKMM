@@ -7,6 +7,7 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.example.blackcardskmm.components.auth.AuthComponent
+import com.example.blackcardskmm.components.cards.CardArtDetailComponent
 import com.example.blackcardskmm.components.cards.CardsLibraryComponent
 import com.example.blackcardskmm.components.createDeck.CreateCardDeckComponent
 import com.example.blackcardskmm.components.decks.DecksComponent
@@ -25,7 +26,8 @@ class RootComponent internal constructor(
     private val lore: (ComponentContext, (LoreComponent.Output) -> Unit) -> LoreComponent,
     private val decks: (ComponentContext, (DecksComponent.Output) -> Unit) -> DecksComponent,
     private val createDeck: (ComponentContext, (CreateCardDeckComponent.Output) -> Unit) -> CreateCardDeckComponent,
-    private val cardsLibrary: (ComponentContext, fractionId: Int, fractionType: FractionType, (CardsLibraryComponent.Output) -> Unit) -> CardsLibraryComponent
+    private val cardsLibrary: (ComponentContext, fractionId: Int, fractionType: FractionType, (CardsLibraryComponent.Output) -> Unit) -> CardsLibraryComponent,
+    private val cardArtDetail: (ComponentContext, artId: Int, (CardArtDetailComponent.Output) -> Unit) -> CardArtDetailComponent
 ): ComponentContext by componentContext {
     constructor(
         componentContext: ComponentContext,
@@ -89,6 +91,14 @@ class RootComponent internal constructor(
                 fractionType = fractionType,
                 output = output
             )
+        },
+        cardArtDetail = { childContext, artId, output ->
+            CardArtDetailComponent(
+                componentContext = childContext,
+                storeFactory = storeFactory,
+                artId = artId,
+                output = output
+            )
         }
     )
 
@@ -114,6 +124,7 @@ class RootComponent internal constructor(
             is Configuration.Decks -> Child.Decks(decks(componentContext, ::onDecksOutput))
             is Configuration.CreateCardDeck -> Child.CreateCardDeck(createDeck(componentContext, ::onCreateCardDeckOutput))
             is Configuration.CardsLibrary -> Child.CardsLibrary(cardsLibrary(componentContext, configuration.fractionId, configuration.fractionType, ::onCreateCardsLibraryOutput))
+            is Configuration.CardArtDetail -> Child.CardArtDetail(cardArtDetail(componentContext, configuration.artId, ::onCardArtDetailOutput))
         }
 
     private  fun onStartCoverOutput(output: StartupComponent.Output): Unit =
@@ -138,15 +149,16 @@ class RootComponent internal constructor(
         when (output) {
             is MainComponent.Output.NavigateToCreateCardDeck -> navigation.push(Configuration.CreateCardDeck)
             is MainComponent.Output.NavigateToCardsLibrary -> navigation.push(Configuration.CardsLibrary(output.fractionId, output.fractionType))
+            is MainComponent.Output.NavigateToCardArtDetail -> navigation.push(Configuration.CardArtDetail(output.artId))
             MainComponent.Output.NavigateToLogout -> navigation.replaceCurrent(Configuration.Auth)
         }
 
-    private  fun onLoreOutput(output: LoreComponent.Output): Unit =
+    private fun onLoreOutput(output: LoreComponent.Output): Unit =
         when (output) {
             LoreComponent.Output.NavigateBack -> navigation.pop()
         }
 
-    private  fun onDecksOutput(output: DecksComponent.Output): Unit =
+    private fun onDecksOutput(output: DecksComponent.Output): Unit =
         when (output) {
             DecksComponent.Output.NavigateBack -> navigation.pop()
         }
@@ -160,6 +172,12 @@ class RootComponent internal constructor(
 //            is CardsLibraryComponent.Output.NavigateToCardDetail -> navigation.push(Configuration.CardDetail)
 //            is CardsLibraryComponent.Output.NavigateBack -> navigation.pop()
 //        }
+
+    private fun onCardArtDetailOutput(output: CardArtDetailComponent.Output): Unit =
+        when (output) {
+            CardArtDetailComponent.Output.NavigateBack -> navigation.pop()
+        }
+
 
     private sealed class Configuration : Parcelable {
         @Parcelize
@@ -185,6 +203,9 @@ class RootComponent internal constructor(
 
         @Parcelize
         data class CardsLibrary(val fractionId: Int, val fractionType: FractionType) : Configuration()
+
+        @Parcelize
+        data class CardArtDetail(val artId: Int) : Configuration()
     }
 
     sealed class Child {
@@ -203,5 +224,7 @@ class RootComponent internal constructor(
         data class CreateCardDeck(val component: CreateCardDeckComponent) : Child()
 
         data class CardsLibrary(val component: CardsLibraryComponent) : Child()
+
+        data class CardArtDetail(val component: CardArtDetailComponent) : Child()
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
+import com.example.blackcardskmm.android.ui.views.cards.CardArtDetail
 import com.example.blackcardskmm.android.ui.views.cards.CardsLibrary
 import com.example.blackcardskmm.android.ui.views.cards.CreateCardDeck
 import com.example.blackcardskmm.android.ui.views.decks.Decks
@@ -13,8 +14,7 @@ import com.example.blackcardskmm.android.ui.views.lore.Lore
 import com.example.blackcardskmm.android.ui.views.main.Main
 import com.example.blackcardskmm.components.RootComponent
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class
-)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun Root(component: RootComponent) {
     Children(
@@ -30,6 +30,7 @@ internal fun Root(component: RootComponent) {
             is RootComponent.Child.Decks -> Decks(child.component)
             is RootComponent.Child.CreateCardDeck -> CreateCardDeck(child.component)
             is RootComponent.Child.CardsLibrary -> CardsLibrary(child.component)
+            is RootComponent.Child.CardArtDetail -> CardArtDetail(child.component)
         }
     }
 }

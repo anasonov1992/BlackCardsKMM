@@ -114,7 +114,10 @@ class MainComponent(
         }
 
     //FIXME
-    private fun onCardArtsOutput(output: CardArtsComponent.Output): Unit = Unit
+    private fun onCardArtsOutput(output: CardArtsComponent.Output): Unit =
+        when(output) {
+            is CardArtsComponent.Output.NavigateToCardArtDetail -> output(Output.NavigateToCardArtDetail(output.artId))
+        }
 
     fun onOutput(output: Output) {
         output(output)
@@ -123,7 +126,8 @@ class MainComponent(
     sealed class Output {
         data class NavigateToCreateCardDeck(val fractionId: Int, val deckName: String) : Output()
         data class NavigateToCardsLibrary(val fractionId: Int, val fractionType: FractionType) : Output()
-        object NavigateToLogout : Output()
+        data class NavigateToCardArtDetail(val artId: Int): Output()
+        data object NavigateToLogout : Output()
     }
 
     private sealed class Configuration : Parcelable {
