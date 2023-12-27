@@ -31,7 +31,7 @@ class CardsLibraryComponent (
     }
 
     sealed class Output {
-        data class NavigateToCardDetail(val cardId: Int): Output() //FIXME
-        object NavigateBack : Output()
+//        data class NavigateToCardDetail(val cardId: Int): Output() //FIXME
+        data object NavigateBack : Output()
     }
 }

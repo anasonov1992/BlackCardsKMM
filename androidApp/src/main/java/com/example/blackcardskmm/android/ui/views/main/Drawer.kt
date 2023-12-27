@@ -9,14 +9,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.blackcardskmm.android.ui.navigation.models.TabNavigationItem
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
+import com.example.blackcardskmm.components.main.MainComponent.NavItem
 
 @Composable
 fun Drawer(
     modifier: Modifier = Modifier,
+    navItems: List<NavItem>,
     onLogoutClicked: () -> Unit,
-    onDestinationClicked: (route: TabNavigationItem) -> Unit
+    onDestinationClicked: (route: NavItem) -> Unit
 ) {
     Box(
         modifier
@@ -30,9 +31,9 @@ fun Drawer(
 //            placeholderResource = R.drawable.ic_user_avatar
 //        )
         Column(modifier = Modifier.align(Alignment.CenterStart)) {
-            TabNavigationItem.drawerNavigationItems.forEach { navItem ->
+            navItems.forEach { navItem ->
                 Text(
-                    text = "FIXME", //FIXME
+                    text = navItem.type.title,
                     style = MaterialTheme.typography.h4.copy(fontFamily = mikadanFont),
                     modifier = Modifier.clickable {
                         onDestinationClicked(navItem)

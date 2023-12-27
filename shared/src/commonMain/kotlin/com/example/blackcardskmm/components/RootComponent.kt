@@ -150,6 +150,8 @@ class RootComponent internal constructor(
             is MainComponent.Output.NavigateToCreateCardDeck -> navigation.push(Configuration.CreateCardDeck)
             is MainComponent.Output.NavigateToCardsLibrary -> navigation.push(Configuration.CardsLibrary(output.fractionId, output.fractionType))
             is MainComponent.Output.NavigateToCardArtDetail -> navigation.push(Configuration.CardArtDetail(output.artId))
+            MainComponent.Output.NavigateToLore -> navigation.push(Configuration.Lore)
+            MainComponent.Output.NavigateToDecks -> navigation.push(Configuration.Decks)
             MainComponent.Output.NavigateToLogout -> navigation.replaceCurrent(Configuration.Auth)
         }
 
@@ -166,12 +168,10 @@ class RootComponent internal constructor(
     //FIXME
     private fun onCreateCardDeckOutput(output: CreateCardDeckComponent.Output): Unit = Unit
 
-    //FIXME
-    private fun onCreateCardsLibraryOutput(output: CardsLibraryComponent.Output): Unit = Unit
-//        when (output) {
-//            is CardsLibraryComponent.Output.NavigateToCardDetail -> navigation.push(Configuration.CardDetail)
-//            is CardsLibraryComponent.Output.NavigateBack -> navigation.pop()
-//        }
+    private fun onCreateCardsLibraryOutput(output: CardsLibraryComponent.Output): Unit =
+        when (output) {
+            is CardsLibraryComponent.Output.NavigateBack -> navigation.pop()
+        }
 
     private fun onCardArtDetailOutput(output: CardArtDetailComponent.Output): Unit =
         when (output) {

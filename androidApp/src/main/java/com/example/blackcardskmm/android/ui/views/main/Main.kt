@@ -18,6 +18,7 @@ import com.example.blackcardskmm.android.ui.views.decks.SetDeckNameBottomSheet
 import com.example.blackcardskmm.android.ui.views.fractions.Fractions
 import com.example.blackcardskmm.android.ui.views.fractions.FractionsBottomSheet
 import com.example.blackcardskmm.components.main.MainComponent
+import com.example.blackcardskmm.components.main.MainComponent.NavItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -36,6 +37,16 @@ fun Main(
     val closeDrawer = remember {
         {
             coroutineScope.launch { scaffoldState.drawerState.close() }
+        }
+    }
+
+    val navigateFromMenu: (NavItem) -> Unit = remember {
+         { navItem ->
+             when (navItem.type) {
+                NavItem.Type.LORE -> component.onOutput(MainComponent.Output.NavigateToLore)
+                NavItem.Type.DECKS -> component.onOutput(MainComponent.Output.NavigateToDecks)
+                else -> Unit
+             }
         }
     }
 
@@ -98,7 +109,7 @@ fun Main(
             isFloatingActionButtonDocked = true,
             bottomBar = {
                 BottomNavigationBar(
-                    navItems = state.navItems,
+                    navItems = state.navTabItems,
                     onNavItemSelected = component::onNavItemClicked,
                     coroutineScope,
                     scaffoldState
@@ -115,14 +126,14 @@ fun Main(
             drawerGesturesEnabled = drawerGesturesEnabledState.value,
             drawerContent = {
                 Drawer(
+                    navItems = state.navMenuItems,
                     onLogoutClicked = {
                         closeDrawer()
                         component.onOutput(MainComponent.Output.NavigateToLogout)
                     }
                 ) { navItem ->
                     closeDrawer()
-                    //TODO: implement drawer navigation
-//                    menuNavigator.navigate(navItem)
+                    navigateFromMenu(navItem)
                 }
             }
         ) { innerPadding ->

@@ -127,6 +127,8 @@ class MainComponent(
         data class NavigateToCreateCardDeck(val fractionId: Int, val deckName: String) : Output()
         data class NavigateToCardsLibrary(val fractionId: Int, val fractionType: FractionType) : Output()
         data class NavigateToCardArtDetail(val artId: Int): Output()
+        data object NavigateToLore : Output()
+        data object NavigateToDecks : Output()
         data object NavigateToLogout : Output()
     }
 
@@ -147,7 +149,9 @@ class MainComponent(
         enum class Type(val id: Long, val title: String) {
             MENU(1L, "Меню"),
             FRACTIONS(2L, "Фракции"),
-            CARDARTS(4L, "Арты")
+            CARDARTS(4L, "Арты"),
+            LORE(5L, "Лор"),
+            DECKS(6L, "Колоды")
         }
     }
 }

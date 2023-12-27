@@ -61,7 +61,7 @@ internal class MainStoreFactory(
         }
 
         private fun selectNavItem(type: NavItem.Type, state: MainStore.State) {
-            val newList = state.navItems.map { it.copy(selected = type == it.type) }
+            val newList = state.navTabItems.map { it.copy(selected = type == it.type) }
             dispatch(Msg.NavListUpdated(newList))
         }
     }
@@ -72,7 +72,7 @@ internal class MainStoreFactory(
                 is Msg.FractionsLoading -> copy(isLoading = true)
                 is Msg.FractionsLoadedSuccessful -> copy(isLoading = false, fractions = msg.fractions)
                 is Msg.FractionsLoadedFailed -> copy(isLoading = false, error = msg.error)
-                is Msg.NavListUpdated -> copy(navItems = msg.navItems)
+                is Msg.NavListUpdated -> copy(navTabItems = msg.navItems)
             }
     }
 }

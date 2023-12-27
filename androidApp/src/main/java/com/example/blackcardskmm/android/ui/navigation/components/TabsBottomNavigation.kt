@@ -39,9 +39,6 @@ internal fun TabsBottomNavigation(
 
 @Composable
 private fun TabNavigationItemIcon(item: NavItem, selected: Boolean) {
-    Text(
-        text = item.type.title
-    )
     //FIXME implement crossplatform KMM resource
 //    val painter = painterResource(item.iconResId)
 //    val selectedPainter = item.selectedIconResId?.let { painterResource(it) }

@@ -13,7 +13,12 @@ interface MainStore: Store<MainStore.Intent, MainStore.State, Nothing> {
     }
 
     data class State(
-        val navItems: List<NavItem> = listOf(NavItem(true, FRACTIONS), NavItem(false, CARDARTS)),
+        val navTabItems: List<NavItem> = listOf(
+            NavItem(false, MENU),
+            NavItem(true, FRACTIONS),
+            NavItem(false, CARDARTS)
+        ),
+        val navMenuItems: List<NavItem> = listOf(NavItem(false, LORE), NavItem(false, DECKS)),
         val fractions: ImmutableList<Fraction> = emptyList<Fraction>().toImmutableList(),
         val isLoading: Boolean = false,
         val isRefreshing: Boolean = false,
