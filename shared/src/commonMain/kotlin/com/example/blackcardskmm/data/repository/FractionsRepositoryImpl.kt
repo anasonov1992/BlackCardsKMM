@@ -17,24 +17,29 @@ import org.koin.core.component.KoinComponent
 
 class FractionsRepositoryImpl constructor(
     private val api: FractionsApi,
-    private val dispatchers: CustomDispatchers,
-    private val realmDao: Realm
+    private val dispatchers: CustomDispatchers
+//    private val realmDao: Realm
 ): KoinComponent, FractionsRepository {
     override suspend fun getFractions(fetchFromRemote: Boolean): Flow<Result<List<Fraction>>> =
         flow {
             try {
-                var data: List<Fraction>
+                val data = api.getFractions().map { Fraction(it) }
+                emit(Result.Success(data))
 
-                if (fetchFromRemote) {
-                    data = api.getFractions().map { Fraction(it) }
-                    realmDao.write {
-                        data.map { copyToRealm(it.toFractionDbObject()) }
-                    }
-                    emit(Result.Success(data))
-                    return@flow
-                }
-
-                emit(Result.Success(realmDao.query(FractionDbObject::class).find().map { it.toFraction() }))
+//                val data: List<Fraction>
+//
+//                if (fetchFromRemote) {
+//                    data = api.getFractions().map { Fraction(it) }
+//                    realmDao.write {
+//                        data.map { copyToRealm(it.toFractionDbObject()) }
+//                    }
+//                    emit(Result.Success(data))
+//                    return@flow
+//                }
+//
+//                emit(Result.Success(realmDao.query(FractionDbObject::class)
+//                    .find().map { it.toFraction() })
+//                )
             }
             catch (se: ServerResponseException) {
                 val statusCode: Int = se.response.status.value

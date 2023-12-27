@@ -22,7 +22,7 @@ import repositoryModule
 fun appModules(enableNetworkLogs: Boolean = false) = listOf(
     networkModule(enableNetworkLogs),
     apiModule(),
-    databaseModule(),
+//    databaseModule(),
     repositoryModule(),
     coreModule(),
     platformModule()
