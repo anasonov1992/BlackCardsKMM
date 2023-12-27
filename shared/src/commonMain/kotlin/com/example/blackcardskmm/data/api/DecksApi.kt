@@ -26,12 +26,14 @@ class DecksApi(
 
     suspend fun getDeckCards(request: DeckCardsRequestDto) = client
         .post("$baseUrl/api/getDeckCards") {
+            contentType(ContentType.Application.Json)
             setBody(request)
         }
         .body<List<DeckRankGroupDto>>()
 
     suspend fun createDeck(request: CreateDeckDto) = client
         .post("$baseUrl/api/createDeck") {
+            contentType(ContentType.Application.Json)
             setBody(request)
         }
         .body<DeckDto>()

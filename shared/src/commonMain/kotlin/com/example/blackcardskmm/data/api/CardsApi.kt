@@ -10,6 +10,8 @@ import com.example.blackcardskmm.util.Constants
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import org.koin.core.component.KoinComponent
 
 class CardsApi(
@@ -18,6 +20,7 @@ class CardsApi(
 ): KoinComponent {
     suspend fun getCardArts(request: SearchPagingRequestDto) = client
         .post("$baseUrl/api/getCardArts") {
+            contentType(ContentType.Application.Json)
             setBody(request)
         }
         .body<List<CardArtDto>>()
@@ -28,12 +31,14 @@ class CardsApi(
 
     suspend fun getCardUnits(request: CardsPagingRequestDto) = client
         .post("$baseUrl/api/getCardUnits") {
+            contentType(ContentType.Application.Json)
             setBody(request)
         }
         .body<List<CardUnitDto>>()
 
     suspend fun getCardSpells(request: CardsPagingRequestDto) = client
         .post("$baseUrl/api/getCardSpells") {
+            contentType(ContentType.Application.Json)
             setBody(request)
         }
         .body<List<CardSpellDto>>()
