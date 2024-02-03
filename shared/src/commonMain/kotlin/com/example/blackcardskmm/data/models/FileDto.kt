@@ -6,8 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FileDto(
-    @Contextual
-    val guid: Uuid,
+    val guid: String,
     val name: String,
     val extension: String,
     val imageUrl: String?

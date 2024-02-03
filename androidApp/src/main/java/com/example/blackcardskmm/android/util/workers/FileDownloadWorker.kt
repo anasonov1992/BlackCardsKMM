@@ -27,7 +27,6 @@ class FileDownloadWorker(
     private val context: Context,
     workerParameters: WorkerParameters
 ): CoroutineWorker(context, workerParameters) {
-
     override suspend fun doWork(): Result {
         val fileUrl = inputData.getString(FileParams.KEY_FILE_URL) ?: ""
         val fileName = inputData.getString(FileParams.KEY_FILE_NAME) ?: ""
@@ -42,7 +41,7 @@ class FileDownloadWorker(
             Result.failure()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = NotificationConstants.CHANNEL_NAME
             val description = NotificationConstants.CHANNEL_DESCRIPTION
             val importance = NotificationManager.IMPORTANCE_HIGH
@@ -74,6 +73,7 @@ class FileDownloadWorker(
             // FIXME
             return Result.failure()
         }
+
         NotificationManagerCompat.from(context).notify(NotificationConstants.NOTIFICATION_ID,builder.build())
 
         val uri = getSavedFileUri(

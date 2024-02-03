@@ -3,11 +3,15 @@ package com.example.blackcardskmm.android.ui.views.lore
 import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.os.Build
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,35 +53,45 @@ fun Lore(
     component: LoreComponent
 ) {
     val state by component.state.collectAsStateWithLifecycle()
-    val textSearch by state.textSearch.collectAsState()
 
     val context = LocalContext.current
     val owner = LocalLifecycleOwner.current
 
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden
+    val bottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true
     )
 
     fun closeFilters() {
         coroutineScope.launch {
-            if (sheetState.isVisible)
-                sheetState.hide()
+            if (bottomSheetState.isVisible)
+                bottomSheetState.hide()
             else
-                sheetState.show()
+                bottomSheetState.show()
         }
     }
 
-    val storagePermissionState = rememberMultiplePermissionsState(
-        listOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
+    val downloadFilesPermissionState = rememberMultiplePermissionsState(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            listOf(
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        }
+        else {
+            listOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        }
     )
 
     LaunchedEffect(Unit) {
-        storagePermissionState.launchMultiplePermissionRequest()
+        downloadFilesPermissionState.launchMultiplePermissionRequest()
     }
 
     val onDownloadFileProcessing: (LoreFile, String) -> Unit =
@@ -112,14 +126,16 @@ fun Lore(
                     .setData(uri.toUri())
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 context.startActivity(intent)
-            } catch (e: ActivityNotFoundException) { }
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(context, "Не удалось открыть файл", Toast.LENGTH_LONG).show()
+            }
         }
 
     val downloadFile: (LoreFile) -> Unit = remember {
         { file ->
-            if (storagePermissionState.permissions.any { !it.status.isGranted }) {
+            if (downloadFilesPermissionState.permissions.any { !it.status.isGranted }) {
                 coroutineScope.launch {
-                    storagePermissionState.launchMultiplePermissionRequest()
+                    downloadFilesPermissionState.launchMultiplePermissionRequest()
                 }
             } else {
                 startDownloadingFile(
@@ -141,73 +157,78 @@ fun Lore(
                     .setData(uri?.toUri())
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 context.startActivity(intent)
-            } catch (e: ActivityNotFoundException) { }
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(context, "Не удалось открыть файл", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.pergament),
-            contentDescription = "",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .matchParentSize()
-        )
-        CollapsingToolbarScaffold(
-            state = rememberCollapsingToolbarScaffoldState(),
-            scrollStrategy = ScrollStrategy.EnterAlways,
-            toolbar = {
-                TopAppBar(
-                    navigationIcon = {
-                        IconButton(onClick = { component.onOutput(LoreComponent.Output.NavigateBack) }) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back",
-                                tint = MaterialTheme.colors.onPrimary
-                            )
-                        }
-                    },
-                    title = {
-                        Text(
-                            text = "Лор",
-                            fontFamily = mikadanFont
-                        )
-                    },
-                    actions = {
-                        IconButton(onClick = { (component::onEvent)(LoreStore.Intent.SearchActivated(!state.isSearchActive)) }) {
-                            Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = "Search",
-                                tint = MaterialTheme.colors.onPrimary
-                            )
-                        }
-                        IconButton(onClick = { closeFilters() }) {
-                            Icon(
-                                imageVector = Icons.Filled.Settings,
-                                contentDescription = "Settings",
-                                tint = MaterialTheme.colors.onPrimary
-                            )
-                        }
+    ModalBottomSheetLayout(
+        sheetState = bottomSheetState,
+        sheetContent = {
+            Spacer(modifier = Modifier.height(1.dp))
+            FractionsSelectionBottomSheet(
+                fractions = state.fractions,
+                onApplyFilters = remember {
+                    {
+                        component.onEvent(LoreStore.Intent.FiltersApplied)
+                        closeFilters()
                     }
-                )
-            },
-            modifier = Modifier
-        ) {
-            ModalBottomSheetLayout(
-                sheetState = sheetState,
-                sheetContent = {
-                    FractionsSelectionBottomSheet(
-                        fractions = state.fractions,
-                        onApplyFilters = remember {
-                            {
-                                component.onEvent(LoreStore.Intent.FiltersApplied)
-                                closeFilters()
+                }
+            )
+        },
+        sheetShape = RoundedCornerShape(16.dp),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = R.drawable.pergament),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .matchParentSize()
+            )
+            CollapsingToolbarScaffold(
+                state = rememberCollapsingToolbarScaffoldState(),
+                scrollStrategy = ScrollStrategy.EnterAlways,
+                toolbar = {
+                    TopAppBar(
+                        navigationIcon = {
+                            IconButton(onClick = { component.onOutput(LoreComponent.Output.NavigateBack) }) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = "Back",
+                                    tint = MaterialTheme.colors.onPrimary
+                                )
+                            }
+                        },
+                        title = {
+                            Text(
+                                text = "Лор",
+                                fontFamily = mikadanFont
+                            )
+                        },
+                        actions = {
+                            IconButton(onClick = {
+                                (component::onEvent)(LoreStore.Intent.SearchActivated(!state.isSearchActive))
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Search,
+                                    contentDescription = "Search",
+                                    tint = MaterialTheme.colors.onPrimary
+                                )
+                            }
+                            IconButton(onClick = { closeFilters() }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Settings,
+                                    contentDescription = "Settings",
+                                    tint = MaterialTheme.colors.onPrimary
+                                )
                             }
                         }
                     )
                 },
-                sheetShape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
             ) {
                 Column {
                     AnimatedVisibility(visible = state.isSearchActive) {
@@ -218,9 +239,11 @@ fun Lore(
                                 color = MaterialTheme.colors.onPrimary,
                                 fontFamily = mikadanFont
                             ),
-                            value = textSearch,
-                            onValueChange = state::setSearchText,
-                            onClear = state::clearSearchText
+                            value = state.search,
+                            onValueChange = remember { {
+                                component.onEvent(LoreStore.Intent.SearchProcessing(it))
+                            } },
+                            onClear = remember { { component.onEvent(LoreStore.Intent.SearchCleared) } }
                         )
                     }
                     LazyVerticalGrid(

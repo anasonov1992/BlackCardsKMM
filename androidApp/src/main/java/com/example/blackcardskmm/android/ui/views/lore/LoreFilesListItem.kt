@@ -69,7 +69,7 @@ fun LoreFilesListItem(
                 text = file.fullName,
                 style = TextStyle(
                     color = MaterialTheme.colors.primary,
-                    fontSize = 14.sp, //FIXME set textStyle from theme
+                    fontSize = 16.sp, //FIXME set textStyle from theme
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = mikadanFont,
                 ),

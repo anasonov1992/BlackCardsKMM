@@ -25,8 +25,8 @@ fun startDownloadingFile(
 
     val constraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
-        .setRequiresStorageNotLow(true)
-        .setRequiresBatteryNotLow(true)
+        .setRequiresStorageNotLow(false)
+        .setRequiresBatteryNotLow(false)
         .build()
 
     val fileDownloadWorker = OneTimeWorkRequestBuilder<FileDownloadWorker>()
@@ -48,6 +48,7 @@ fun startDownloadingFile(
                         success(it.outputData.getString(FileDownloadWorker.FileParams.KEY_FILE_URI) ?: "")
                     }
                     WorkInfo.State.FAILED -> {
+                        val data = it.outputData
                         failed("При загрузке файла произошла ошибка...")
                     }
                     WorkInfo.State.RUNNING -> {
