@@ -1,4 +1,4 @@
-package com.example.blackcardskmm.android.ui.views.cards.components
+package com.example.blackcardskmm.android.ui.views.cards
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -115,7 +115,7 @@ fun CardPresentation(
                         .height(460.dp)
                         .graphicsLayer {
                             alpha = animateBack
-                        },
+                        }
                 )
             } else {
                 SubcomposeAsyncImage(
@@ -185,12 +185,11 @@ fun CardPresentation(
                     RoundedButton(
                         enabled = canCardBeAdded,
                         onClick = {
-                            if (!canCardBeAdded) {
+                            card.amountInDeckUp()
+                            onCardToDeckAdded()
+
+                            if (!canCardBeAdded() || !card.canAddCardToDeck) {
                                 balloonWindow.showAlignTop()
-                            }
-                            else {
-                                card.amountInDeckUp()
-                                onCardToDeckAdded()
                             }
                         }) {
                         Icon(

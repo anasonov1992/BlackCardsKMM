@@ -25,7 +25,8 @@ class RootComponent internal constructor(
     private val main: (ComponentContext, (MainComponent.Output) -> Unit) -> MainComponent,
     private val lore: (ComponentContext, (LoreComponent.Output) -> Unit) -> LoreComponent,
     private val decks: (ComponentContext, (DecksComponent.Output) -> Unit) -> DecksComponent,
-    private val createDeck: (ComponentContext, (CreateCardDeckComponent.Output) -> Unit) -> CreateCardDeckComponent,
+    private val deck: (ComponentContext, fractionId: Int, deckId: Int?, (CreateCardDeckComponent.Output) -> Unit) -> CreateCardDeckComponent,
+    private val createDeck: (ComponentContext, fractionId: Int, deckId: Int?, deckName: String?, (CreateCardDeckComponent.Output) -> Unit) -> CreateCardDeckComponent,
     private val cardsLibrary: (ComponentContext, fractionId: Int, fractionType: FractionType, (CardsLibraryComponent.Output) -> Unit) -> CardsLibraryComponent,
     private val cardArtDetail: (ComponentContext, artId: Int, (CardArtDetailComponent.Output) -> Unit) -> CardArtDetailComponent
 ): ComponentContext by componentContext {
@@ -76,10 +77,22 @@ class RootComponent internal constructor(
                 output = output
             )
         },
-        createDeck = { childContext, output ->
+        deck = { childContext, fractionId, deckId, output ->
             CreateCardDeckComponent(
                 componentContext = childContext,
                 storeFactory = storeFactory,
+                fractionId = fractionId,
+                deckId = deckId,
+                output = output
+            )
+        },
+        createDeck = { childContext, fractionId, deckId, deckName, output ->
+            CreateCardDeckComponent(
+                componentContext = childContext,
+                storeFactory = storeFactory,
+                fractionId = fractionId,
+                deckId = deckId,
+                deckName = deckName,
                 output = output
             )
         },
@@ -114,23 +127,24 @@ class RootComponent internal constructor(
 
     val childStack: Value<ChildStack<*, Child>> = stack
 
-    private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
-        when (configuration) {
+    private fun createChild(config: Configuration, componentContext: ComponentContext): Child =
+        when (config) {
             is Configuration.Startup -> Child.Startup(startup(componentContext, ::onStartCoverOutput))
             is Configuration.Auth -> Child.Auth(auth(componentContext, ::onAuthOutput))
             is Configuration.Register -> Child.Register(register(componentContext, ::onRegisterOutput))
             is Configuration.Main -> Child.Main(main(componentContext, ::onMainOutput))
             is Configuration.Lore -> Child.Lore(lore(componentContext, ::onLoreOutput))
             is Configuration.Decks -> Child.Decks(decks(componentContext, ::onDecksOutput))
-            is Configuration.CreateCardDeck -> Child.CreateCardDeck(createDeck(componentContext, ::onCreateCardDeckOutput))
-            is Configuration.CardsLibrary -> Child.CardsLibrary(cardsLibrary(componentContext, configuration.fractionId, configuration.fractionType, ::onCreateCardsLibraryOutput))
-            is Configuration.CardArtDetail -> Child.CardArtDetail(cardArtDetail(componentContext, configuration.artId, ::onCardArtDetailOutput))
+            is Configuration.Deck -> Child.Deck(deck(componentContext, config.fractionId, config.deckId, ::onDeckOutput))
+            is Configuration.CreateCardDeck -> Child.CreateCardDeck(createDeck(componentContext, config.fractionId, config.deckId, config.deckName, ::onCreateCardDeckOutput))
+            is Configuration.CardsLibrary -> Child.CardsLibrary(cardsLibrary(componentContext, config.fractionId, config.fractionType, ::onCreateCardsLibraryOutput))
+            is Configuration.CardArtDetail -> Child.CardArtDetail(cardArtDetail(componentContext, config.artId, ::onCardArtDetailOutput))
         }
 
     private  fun onStartCoverOutput(output: StartupComponent.Output): Unit =
         when(output) {
             is StartupComponent.Output.NavigateToAuth -> navigation.replaceCurrent(Configuration.Auth)
-            is StartupComponent.Output.NavigateToAppStart -> navigation.replaceCurrent(Configuration.Main)
+            is StartupComponent.Output.NavigateToMain -> navigation.replaceCurrent(Configuration.Main)
         }
 
     private fun onAuthOutput(output: AuthComponent.Output): Unit =
@@ -147,7 +161,7 @@ class RootComponent internal constructor(
 
     private fun onMainOutput(output: MainComponent.Output): Unit =
         when (output) {
-            is MainComponent.Output.NavigateToCreateCardDeck -> navigation.push(Configuration.CreateCardDeck)
+            is MainComponent.Output.NavigateToCreateCardDeck -> navigation.push(Configuration.CreateCardDeck(output.fractionId, output.deckId, output.deckName))
             is MainComponent.Output.NavigateToCardsLibrary -> navigation.push(Configuration.CardsLibrary(output.fractionId, output.fractionType))
             is MainComponent.Output.NavigateToCardArtDetail -> navigation.push(Configuration.CardArtDetail(output.artId))
             MainComponent.Output.NavigateToLore -> navigation.push(Configuration.Lore)
@@ -163,10 +177,18 @@ class RootComponent internal constructor(
     private fun onDecksOutput(output: DecksComponent.Output): Unit =
         when (output) {
             DecksComponent.Output.NavigateBack -> navigation.pop()
+            is DecksComponent.Output.NavigateToDeck -> navigation.push(Configuration.Deck(output.fractionId, output.deckId))
         }
 
-    //FIXME
-    private fun onCreateCardDeckOutput(output: CreateCardDeckComponent.Output): Unit = Unit
+    private fun onDeckOutput(output: CreateCardDeckComponent.Output): Unit =
+        when (output) {
+            is CreateCardDeckComponent.Output.NavigateBack -> navigation.pop()
+        }
+
+    private fun onCreateCardDeckOutput(output: CreateCardDeckComponent.Output): Unit =
+        when (output) {
+            is CreateCardDeckComponent.Output.NavigateBack -> navigation.pop()
+        }
 
     private fun onCreateCardsLibraryOutput(output: CardsLibraryComponent.Output): Unit =
         when (output) {
@@ -181,25 +203,28 @@ class RootComponent internal constructor(
 
     private sealed class Configuration : Parcelable {
         @Parcelize
-        object Startup: Configuration()
+        data object Startup : Configuration()
 
         @Parcelize
-        object Auth: Configuration()
+        data object Auth : Configuration()
 
         @Parcelize
-        object Register: Configuration()
+        data object Register : Configuration()
 
         @Parcelize
-        object Main : Configuration()
+        data object Main : Configuration()
 
         @Parcelize
-        object Lore: Configuration()
+        data object Lore : Configuration()
 
         @Parcelize
-        object Decks: Configuration()
+        data object Decks : Configuration()
 
         @Parcelize
-        object CreateCardDeck : Configuration()
+        data class Deck(val fractionId: Int, val deckId: Int) : Configuration()
+
+        @Parcelize
+        data class CreateCardDeck(val fractionId: Int, val deckId: Int? = null, val deckName: String? = null) : Configuration()
 
         @Parcelize
         data class CardsLibrary(val fractionId: Int, val fractionType: FractionType) : Configuration()
@@ -220,6 +245,8 @@ class RootComponent internal constructor(
         data class Lore(val component: LoreComponent) : Child()
 
         data class Decks(val component: DecksComponent) : Child()
+
+        data class Deck(val component: CreateCardDeckComponent) : Child()
 
         data class CreateCardDeck(val component: CreateCardDeckComponent) : Child()
 

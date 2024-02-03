@@ -28,6 +28,7 @@ internal fun Root(component: RootComponent) {
             is RootComponent.Child.Main -> Main(child.component)
             is RootComponent.Child.Lore -> Lore(child.component)
             is RootComponent.Child.Decks -> Decks(child.component)
+            is RootComponent.Child.Deck -> CreateCardDeck(child.component)
             is RootComponent.Child.CreateCardDeck -> CreateCardDeck(child.component)
             is RootComponent.Child.CardsLibrary -> CardsLibrary(child.component)
             is RootComponent.Child.CardArtDetail -> CardArtDetail(child.component)

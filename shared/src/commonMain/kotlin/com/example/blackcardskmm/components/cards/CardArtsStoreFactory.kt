@@ -42,7 +42,7 @@ internal class CardArtsStoreFactory(
             loadCardArtsAsFlow()
         }
 
-        override fun executeIntent(intent: CardArtsStore.Intent, getState: () -> CardArtsStore.State): Unit =
+        override fun executeIntent(intent: CardArtsStore.Intent, getState: () -> CardArtsStore.State) =
             when (intent) {
                 is CardArtsStore.Intent.SearchActivated -> dispatch(Msg.SearchActivated(isActive = intent.isActive))
                 is CardArtsStore.Intent.SearchProcessing -> getState().setSearchText(filter = intent.filter)
