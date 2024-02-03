@@ -2,6 +2,12 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true" port="8080">192.168.0.190</domain>
+        <domain includeSubdomains="true" port="8080">0.0.0.0</domain>
         <domain includeSubdomains="true" port="8080">10.71.2.203</domain>
+        <domain includeSubdomains="true" port="8080">10.71.2.233</domain>
+        <domain includeSubdomains="true" port="8080">10.71.3.226</domain>
+        <domain includeSubdomains="true" port="8080">10.71.2.206</domain>
+        <domain includeSubdomains="true" port="8080">10.71.3.199</domain>
+        <domain includeSubdomains="true" port="8080">10.71.1.1</domain>
     </domain-config>
 </network-security-config>
