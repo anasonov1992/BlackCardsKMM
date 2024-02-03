@@ -21,16 +21,12 @@ class StartupComponent (
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<StartupStore.State> = store.stateFlow
 
-    fun onEvent(event: StartupStore.Intent) {
-        store.accept(event)
-    }
-
     fun onOutput(output: Output) {
         output(output)
     }
 
     sealed class Output {
-        object NavigateToAuth: Output()
-        object NavigateToAppStart: Output()
+        data object NavigateToAuth: Output()
+        data object NavigateToMain: Output()
     }
 }

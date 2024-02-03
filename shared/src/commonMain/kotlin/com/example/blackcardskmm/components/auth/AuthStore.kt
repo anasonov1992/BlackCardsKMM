@@ -11,8 +11,8 @@ interface AuthStore: Store<AuthStore.Intent, AuthStore.State, Nothing> {
     }
 
     data class State(
-        val email: String = "",
-        val password: String = "",
+        val email: String = "anton.nasonov3@gmail.com", //FIXME
+        val password: String = "tonypower2023", //FIXME
         val passwordVisibility: Boolean = false,
         val isLoading: Boolean = false,
         val isSignedIn: Boolean = false,

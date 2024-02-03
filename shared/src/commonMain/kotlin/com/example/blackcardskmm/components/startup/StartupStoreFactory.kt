@@ -8,7 +8,9 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.example.blackcardskmm.domain.repository.AuthRepository
 import com.example.blackcardskmm.util.CustomDispatchers
 import com.example.blackcardskmm.util.Result
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.delayFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -21,7 +23,7 @@ internal class StartupStoreFactory(
     private val dispatchers by inject<CustomDispatchers>()
 
     fun create(): StartupStore =
-        object : StartupStore, Store<StartupStore.Intent, StartupStore.State, Nothing> by storeFactory.create(
+        object : StartupStore, Store<Nothing, StartupStore.State, Nothing> by storeFactory.create(
             name = "StartupStore",
             initialState = StartupStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
@@ -30,24 +32,23 @@ internal class StartupStoreFactory(
         ) {}
 
     private sealed class Msg {
-        object AuthenticationProcessing : Msg()
-        object AuthenticationConfirmed : Msg()
+        data object AuthenticationProcessing : Msg()
+        data object AuthenticationConfirmed : Msg()
         data class AuthenticationFailed(val error: String) : Msg()
     }
 
-    private inner class ExecutorImpl : CoroutineExecutor<StartupStore.Intent, Unit, StartupStore.State, Msg, Nothing>(dispatchers.main) {
+    private inner class ExecutorImpl : CoroutineExecutor<Nothing, Unit, StartupStore.State, Msg, Nothing>(dispatchers.main) {
         override fun executeAction(action: Unit, getState: () -> StartupStore.State) {
-            checkAuthentication()
-        }
-
-        override fun executeIntent(intent: StartupStore.Intent, getState: () -> StartupStore.State) {
             checkAuthentication()
         }
 
         private fun checkAuthentication() {
             scope.launch {
                 repository.isAuthenticated()
-                    .onStart { dispatch(Msg.AuthenticationProcessing) }
+                    .onStart {
+                        dispatch(Msg.AuthenticationProcessing)
+                        delay(2000)
+                    }
                     .collectLatest { result ->
                         when (result) {
                             is Result.Success -> dispatch(Msg.AuthenticationConfirmed)

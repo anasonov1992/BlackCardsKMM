@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import com.example.blackcardskmm.components.main.MainComponent.NavItem
 import com.example.blackcardskmm.android.ui.theme.mikadanFont
 
@@ -28,7 +29,10 @@ internal fun TabsBottomNavigation(
                     )
                 },
                 label = {
-                    Text(text = item.type.title, fontFamily = mikadanFont)
+                    Text(
+                        text = item.type.title,
+                        fontFamily = mikadanFont,
+                        fontSize = 18.sp)
                 },
                 selected = item.selected,
                 onClick = { onNavItemClick(item) },
