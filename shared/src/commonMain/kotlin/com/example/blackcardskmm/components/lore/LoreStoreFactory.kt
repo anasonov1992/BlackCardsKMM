@@ -14,7 +14,9 @@ import com.example.blackcardskmm.util.CustomDispatchers
 import com.example.blackcardskmm.util.Result
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onStart
@@ -41,29 +43,40 @@ internal class LoreStoreFactory(
 
     private sealed class Msg {
         data class SearchActivated(val isActive: Boolean): Msg()
-        object LoreFilesLoading: Msg()
-        data class LoreFilesLoaded(val files: ImmutableList<LoreFile>): Msg()
-        data class LoreFilesFailed(val error: String): Msg()
+        data object LoreFilesLoading: Msg()
+        data class LoreFilesLoaded(val search: String = "", val files: ImmutableList<LoreFile>): Msg()
+        data class LoreFilesFailed(val search: String = "", val error: String): Msg()
         data class FractionsLoaded(val fractions: ImmutableList<FractionSelectionModel>): Msg()
         data class FractionsFailed(val error: String): Msg()
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<LoreStore.Intent, Unit, LoreStore.State, Msg, Nothing>(dispatchers.main) {
+        private val _textSearch = MutableStateFlow("")
+        val textSearch: StateFlow<String> = _textSearch.asStateFlow()
+
+        fun setTextSearch(filter: String) {
+            _textSearch.value = filter
+        }
+
+        fun clearTextSearch() {
+            _textSearch.value = ""
+        }
+
         override fun executeAction(action: Unit, getState: () -> LoreStore.State) {
-            setupTextSearch(getState().textSearch)
+            setupTextSearch()
             loadFractions()
-            loadFiles()
         }
 
         override fun executeIntent(intent: LoreStore.Intent, getState: () -> LoreStore.State): Unit =
             when (intent) {
                 is LoreStore.Intent.SearchActivated -> dispatch(Msg.SearchActivated(isActive = intent.isActive))
-                is LoreStore.Intent.SearchProcessing -> loadFiles(intent.search, filters = getState().getAppliedFilters())
-                is LoreStore.Intent.SearchCleared -> loadFiles()
+                is LoreStore.Intent.SearchProcessing -> setTextSearch(filter = intent.search)
+                // loadFiles(intent.search, filters = getState().getAppliedFilters())
+                is LoreStore.Intent.SearchCleared -> clearTextSearch() // loadFiles()
                 is LoreStore.Intent.FiltersApplied -> loadFiles(filters = getState().getAppliedFilters())
             }
 
-        private fun setupTextSearch(textSearch: StateFlow<String>) {
+        private fun setupTextSearch() {
             scope.launch {
                 textSearch.debounce(500).collect { query ->
                     if (query.isNullOrEmpty()) {
@@ -87,14 +100,14 @@ internal class LoreStoreFactory(
             }
         }
 
-        private fun loadFiles(search: String = "", filters: List<Int> = emptyList()) {
+        private fun loadFiles(query: String = "", filters: List<Int> = emptyList()) {
             scope.launch {
-                filesRepository.getFiles(SearchRequestDto(search))
+                filesRepository.getFiles(SearchRequestDto(query))
                     .onStart { dispatch(Msg.LoreFilesLoading) }
                     .collectLatest { result ->
                         when (result) {
-                            is Result.Success -> dispatch(Msg.LoreFilesLoaded(files = result.data.toImmutableList()))
-                            is Result.Error -> dispatch(Msg.LoreFilesFailed(error = result.message))
+                            is Result.Success -> dispatch(Msg.LoreFilesLoaded(search = query, files = result.data.toImmutableList()))
+                            is Result.Error -> dispatch(Msg.LoreFilesFailed(search = query, error = result.message))
                         }
                     }
             }
@@ -106,8 +119,8 @@ internal class LoreStoreFactory(
             when (msg) {
                 is Msg.SearchActivated -> copy(isLoading = false, isSearchActive = msg.isActive)
                 is Msg.LoreFilesLoading -> copy(isLoading = true)
-                is Msg.LoreFilesLoaded -> copy(isLoading = false, files = msg.files)
-                is Msg.LoreFilesFailed -> copy(isLoading = false, error = msg.error)
+                is Msg.LoreFilesLoaded -> copy(isLoading = false, search = msg.search, files = msg.files)
+                is Msg.LoreFilesFailed -> copy(isLoading = false, search = msg.search, error = msg.error)
                 is Msg.FractionsLoaded -> copy(isLoading = false, fractions = msg.fractions)
                 is Msg.FractionsFailed -> copy(isLoading = false, error = msg.error)
             }
