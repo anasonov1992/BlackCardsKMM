@@ -16,14 +16,14 @@ import com.example.blackcardskmm.android.ui.theme.mikadanFont
 @Composable
 fun ShortDeckCard(
     deck: Deck,
-    onClick: (Int, Int, String) -> Unit
+    onClick: (Int, Int) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable { onClick.invoke(deck.fractionId, deck.id, deck.name) }
+            .clickable { onClick.invoke(deck.fractionId, deck.id) }
     ) {
         Spacer(modifier = Modifier.width(16.dp))
         Text(

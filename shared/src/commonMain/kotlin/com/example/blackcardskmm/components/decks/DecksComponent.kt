@@ -26,6 +26,7 @@ class DecksComponent (
     }
 
     sealed class Output {
-        object NavigateBack: Output()
+        data object NavigateBack : Output()
+        data class NavigateToDeck(val fractionId: Int, val deckId: Int) : Output()
     }
 }

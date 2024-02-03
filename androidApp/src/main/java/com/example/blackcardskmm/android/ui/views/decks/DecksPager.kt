@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun DecksPager(
     state: DecksStore.State,
-    onDeckNavigate: (Int, Int, String) -> Unit
+    onDeckNavigate: (Int, Int) -> Unit
 ) {
     Column {
         val pagerState = rememberPagerState(
@@ -68,11 +68,11 @@ fun DecksPager(
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) { tabIndex ->
             when (tabIndex) {
-                0 -> MyDecks(state) { fractionId, deckId, deckName ->
-                    onDeckNavigate(fractionId, deckId, deckName)
+                0 -> MyDecks(state) { fractionId, deckId ->
+                    onDeckNavigate(fractionId, deckId)
                 }
                 1 -> SharedDecks(state)
             }

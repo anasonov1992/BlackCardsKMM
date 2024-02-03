@@ -124,7 +124,7 @@ class MainComponent(
     }
 
     sealed class Output {
-        data class NavigateToCreateCardDeck(val fractionId: Int, val deckName: String) : Output()
+        data class NavigateToCreateCardDeck(val fractionId: Int, val deckName: String, val deckId: Int? = null) : Output()
         data class NavigateToCardsLibrary(val fractionId: Int, val fractionType: FractionType) : Output()
         data class NavigateToCardArtDetail(val artId: Int): Output()
         data object NavigateToLore : Output()
@@ -134,10 +134,10 @@ class MainComponent(
 
     private sealed class Configuration : Parcelable {
         @Parcelize
-        object Fractions: Configuration()
+        data object Fractions: Configuration()
 
         @Parcelize
-        object CardArts : Configuration()
+        data object CardArts : Configuration()
     }
 
     sealed class Child {

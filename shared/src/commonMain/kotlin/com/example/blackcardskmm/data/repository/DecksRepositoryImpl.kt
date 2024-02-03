@@ -35,10 +35,10 @@ class DecksRepositoryImpl(
             }
         }.flowOn(dispatchers.default)
 
-    override suspend fun getDeckCards(deckId: Int): Flow<Result<List<CardDeckRankGroup>>> =
+    override suspend fun getDeckCards(deckId: Int, fractionId: Int): Flow<Result<List<CardDeckRankGroup>>> =
         flow {
             try {
-                val data = api.getDeckCards(DeckCardsRequestDto(deckId = deckId)).map { CardDeckRankGroup(it) }
+                val data = api.getDeckCards(DeckCardsRequestDto(deckId, fractionId)).map { CardDeckRankGroup(it) }
                 emit(Result.Success(data))
             }
             catch (se: ServerResponseException) {

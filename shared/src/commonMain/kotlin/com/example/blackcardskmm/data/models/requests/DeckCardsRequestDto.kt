@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DeckCardsRequestDto(
-    val deckId: Int
+    val deckId: Int,
+    val fractionId: Int
 )

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface DecksRepository {
     suspend fun getFractionCards(fractionId: Int): Flow<Result<List<CardDeckRankGroup>>>
 
-    suspend fun getDeckCards(deckId: Int): Flow<Result<List<CardDeckRankGroup>>>
+    suspend fun getDeckCards(deckId: Int, fractionId: Int): Flow<Result<List<CardDeckRankGroup>>>
 
     suspend fun createDeck(request: CreateDeckDto): Flow<Result<Deck>>
 

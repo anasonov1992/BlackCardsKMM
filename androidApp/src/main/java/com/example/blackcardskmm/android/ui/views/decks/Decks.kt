@@ -57,8 +57,8 @@ fun Decks(
             },
             modifier = Modifier
         ) {
-            DecksPager(state) { fractionId, deckId, deckName ->
-//                navigator.navigateEvent(NavigationEvent.CreateCardDeck(fractionId, deckName, deckId)) //FIXME
+            DecksPager(state) { fractionId, deckId ->
+                component.onOutput(DecksComponent.Output.NavigateToDeck(fractionId, deckId))
             }
         }
     }

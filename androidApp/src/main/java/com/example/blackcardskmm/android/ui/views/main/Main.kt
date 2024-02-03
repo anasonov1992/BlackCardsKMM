@@ -81,7 +81,7 @@ fun Main(
                     BottomSheetType.Fractions ->
                         FractionsBottomSheet(
                             fractions = state.fractions,
-                            closeBottomSheet = {
+                            closeBottomSheet = { it ->
                                 closeBottomSheet()
                                 fractionId = it
                                 bottomSheetType = BottomSheetType.DeckName
@@ -105,8 +105,8 @@ fun Main(
     ) {
         Scaffold(
             scaffoldState = scaffoldState,
-            floatingActionButtonPosition = FabPosition.Center,
-            isFloatingActionButtonDocked = true,
+            floatingActionButtonPosition = FabPosition.End,
+            isFloatingActionButtonDocked = false,
             bottomBar = {
                 BottomNavigationBar(
                     navItems = state.navTabItems,
