@@ -65,12 +65,12 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.4")
     implementation("androidx.compose.foundation:foundation:1.5.4")
     implementation("androidx.compose.material:material:1.5.4")
-    implementation("androidx.compose.compiler:compiler:1.5.6")
+    implementation("androidx.compose.compiler:compiler:1.5.7")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     // Compose Accompanist
     implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
@@ -89,9 +89,9 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
 
     // Koin
-    implementation("io.insert-koin:koin-core:3.4.0")
-    implementation("io.insert-koin:koin-android:3.4.0")
-    implementation("io.insert-koin:koin-androidx-compose:3.4.3")
+    implementation("io.insert-koin:koin-core:3.5.3")
+    implementation("io.insert-koin:koin-android:3.5.3")
+    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
 
     // Immutable Collections
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
@@ -106,7 +106,7 @@ dependencies {
     implementation("commons-io:commons-io:2.11.0")
 
     // Reflection
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.21")
 
     // Splash Core API
     implementation("androidx.core:core-splashscreen:1.0.1")

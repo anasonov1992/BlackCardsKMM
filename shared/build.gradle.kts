@@ -5,6 +5,7 @@ plugins {
     id("com.android.library")
     id("kotlin-parcelize")
     id("com.rickclephas.kmp.nativecoroutines")
+    id("dev.icerock.mobile.multiplatform-resources")
 //    id("io.realm.kotlin")
 }
 
@@ -36,8 +37,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-
                 // Ktor
                 implementation("io.ktor:ktor-client-core:2.3.7")
                 implementation("io.ktor:ktor-client-content-negotiation:2.2.4")
@@ -52,7 +51,7 @@ kotlin {
 //              implementation("app.cash.sqldelight:primitive-adapters:2.0.0-alpha05")
 
                 // Koin
-                implementation("io.insert-koin:koin-core:3.4.0")
+                implementation("io.insert-koin:koin-core:3.5.3")
 
                 // Paging
                 implementation("io.github.kuuuurt:multiplatform-paging:0.6.1")
@@ -61,7 +60,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
                 // UUID
-                implementation("com.benasher44:uuid:0.7.0")
+                implementation("com.benasher44:uuid:0.8.2")
 
                 // Decompose
                 implementation("com.arkivanov.decompose:decompose:2.2.1")
@@ -72,9 +71,14 @@ kotlin {
                 implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:3.2.1")
                 implementation("com.arkivanov.mvikotlin:rx:3.3.0")
 
+                // Realm
                 implementation("io.realm.kotlin:library-base:1.13.0") // Add to use local realm (no sync)
                 implementation("io.realm.kotlin:library-sync:1.8.0") // Add to use Device Sync
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1") // Add to use coroutines with the SDK
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3") // Add to use coroutines with the SDK
+
+                // MOKO Resources
+                implementation("dev.icerock.moko:resources:0.23.0")
+                implementation("dev.icerock.moko:resources-compose:0.23.0") // for compose multiplatform
             }
         }
 
@@ -106,7 +110,7 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 // Ktor
-                implementation("io.ktor:ktor-client-darwin:2.2.4")
+                implementation("io.ktor:ktor-client-darwin:2.3.5")
 
                 // SQLight
                 implementation("com.squareup.sqldelight:native-driver:1.5.5")

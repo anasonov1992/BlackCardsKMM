@@ -12,6 +12,7 @@ buildscript {
         classpath("com.rickclephas.kmp:kmp-nativecoroutines-gradle-plugin:0.13.3")
         classpath("com.squareup.sqldelight:gradle-plugin:1.5.5")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21")
+        classpath("dev.icerock.moko:resources-generator:0.23.0")
     }
     repositories {
         mavenCentral()

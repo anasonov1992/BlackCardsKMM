@@ -4,7 +4,7 @@ pluginManagement {
     plugins {
         id("com.google.devtools.ksp") version kspVersion apply false
         kotlin("multiplatform") version kotlinVersion apply false
-        id("com.android.application") version "8.1.3"
+        id("com.android.application") version "8.2.0"
         id("org.jetbrains.kotlin.android") version "1.9.21"
     }
     repositories {
