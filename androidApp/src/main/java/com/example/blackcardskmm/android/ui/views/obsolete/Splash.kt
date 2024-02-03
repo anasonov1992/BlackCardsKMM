@@ -1,4 +1,4 @@
-package com.example.blackcardskmm.android.ui.views
+package com.example.blackcardskmm.android.ui.views.obsolete
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
